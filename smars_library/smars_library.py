@@ -40,7 +40,7 @@ except OSError as error:
     # print("failed to initialise the servo driver (Adafruit PCA9685)")
     PWM = ""
 except:
-    print("(1) There was an error loading the adafruit driver")
+    print("There was an error loading the adafruit driver; loading without PCA9685.")
     DONOTUSE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
 else:
     log_string = "PCA9685 Driver loaded)."
