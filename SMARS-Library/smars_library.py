@@ -32,7 +32,7 @@ logging.propagate = False
 # Initialise the PCA9685 using the default address (0x40).
 try:
     PWM = Adafruit_PCA9685.PCA9685()
-except Exception as error:
+except RuntimeError as error:
     log_string = "failed to initialise the servo driver (Adafruit PCA9685): " + error
     logging.error(log_string)
     DONOTUSE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
@@ -118,7 +118,7 @@ class Leg(object):
         try:
             if DONOTUSE_PCA_DRIVER is False:
                 pwm = Adafruit_PCA9685.PCA9685()
-        except:
+        except RuntimeError as error:
             logging.warning("The servo driver failed to initialise - have you installed the adafruit PCA9685 driver,"
                             "and is it connected?")
             # print("The servo driver failed to initialise - have you installed the adafruit PCA9685 driver,"
@@ -231,7 +231,7 @@ class Leg(object):
                 try:
                     if DONOTUSE_PCA_DRIVER is False:
                         PWM.set_pwm(self.channel, self.channel, pulse)
-                except:
+                except RuntimeError as error:
                     logging.warning(
                         "Failed to set the pwm frequency - did the servo driver initialize correctly?")
                     # print("Failed to set pwm - did the servo driver initialize correctly?")
@@ -301,7 +301,7 @@ class SmarsRobot(object):
             if DONOTUSE_PCA_DRIVER is False:
                 pwm = Adafruit_PCA9685.PCA9685()
                 pwm.set_pwm_freq(60)
-        except:
+        except RuntimeError as error:
             logging.warning(
                 "Failed to set the pwm frequency - did the servo driver initialize correctly?")
             # print("The Servo Driver failed to initialise, is the driver installed and the board plugged in?")
