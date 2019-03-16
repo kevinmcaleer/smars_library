@@ -32,8 +32,9 @@ logging.propagate = False
 # Initialise the PCA9685 using the default address (0x40).
 try:
     PWM = Adafruit_PCA9685.PCA9685()
-except RuntimeError as error:
-    log_string = "failed to initialise the servo driver (Adafruit PCA9685): " + error
+except OSError as error:
+    # print(error)
+    log_string = "failed to initialise the servo driver (Adafruit PCA9685): "
     logging.error(log_string)
     DONOTUSE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
     # print("failed to initialise the servo driver (Adafruit PCA9685)")
@@ -43,8 +44,7 @@ except:
 else:
     log_string = "PCA9685 Driver loaded)."
     DONOTUSE_PCA_DRIVER = False # tell later parts of the code to use the driver
-
-    # logging.error(log_string)
+    logging.error(log_string)
     # print("failed to initialise the servo driver (Adafruit PCA9685)")
     # PWM = ""
 # Configure min and max servo pulse lengths

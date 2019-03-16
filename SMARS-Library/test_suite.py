@@ -2,9 +2,9 @@ import unittest
 
 # from SMARS_Library import leg
 # from SMARS_Library import Leg
-from smars_library.SMARS_Library import Leg
+from smars_library import Leg
 # from SMARS_Library import set_servo_pulse
-from smars_library.SMARS_Library import set_servo_pulse
+from smars_library import set_servo_pulse
 
 
 class SetServoPulseTestCase(unittest.TestCase):
