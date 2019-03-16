@@ -28,17 +28,21 @@ import logging
 import Adafruit_PCA9685
 logging.basicConfig(level=logging.CRITICAL)
 logging.propagate = False
+# DONOTUSE_PCA_DRIVER = False:
 # Initialise the PCA9685 using the default address (0x40).
 try:
     PWM = Adafruit_PCA9685.PCA9685()
-except ImportError as error:
+except Exception as error:
     log_string = "failed to initialise the servo driver (Adafruit PCA9685): " + error
     logging.error(log_string)
+    DONOTUSE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
     # print("failed to initialise the servo driver (Adafruit PCA9685)")
     PWM = ""
 else:
-    log_string = "failed to initialise the servo driver (Adafruit PCA9685): "
-    logging.error(log_string)
+    log_string = "PCA9685 Driver loaded)."
+    DONOTUSE_PCA_DRIVER = False # tell later parts of the code to use the driver
+
+    # logging.error(log_string)
     # print("failed to initialise the servo driver (Adafruit PCA9685)")
     # PWM = ""
 # Configure min and max servo pulse lengths
@@ -59,7 +63,8 @@ RIGHT_FOOT_BACK = 3  # channel 5
 
 # Set frequency to 60hz, good for servos.
 try:
-    PWM.set_pwm_freq(60)
+    if DONOTUSE_PCA_DRIVER is False:
+        PWM.set_pwm_freq(60)
 except ValueError as error:
     log_string = "failed to set the pwm frequency:, " + error
     logging.error(log_string)
@@ -82,7 +87,8 @@ def set_servo_pulse(channel, pulse):
         pulse *= 1000
         pulse //= pulse_length
         try:
-            PWM.set_pwm(channel, 0, pulse)
+            if DONOTUSE_PCA_DRIVER is False:
+                PWM.set_pwm(channel, 0, pulse)
         except:
             logging.warning(
                 "Failed to set pwm - did the driver initialize correctly?")
@@ -110,14 +116,16 @@ class Leg(object):
     def __init__(self, name, channel, leg_minangle, leg_maxangle, invert):
         # Initialises the leg object
         try:
-            pwm = Adafruit_PCA9685.PCA9685()
+            if DONOTUSE_PCA_DRIVER is False:
+                pwm = Adafruit_PCA9685.PCA9685()
         except:
             logging.warning("The servo driver failed to initialise - have you installed the adafruit PCA9685 driver,"
                             "and is it connected?")
             # print("The servo driver failed to initialise - have you installed the adafruit PCA9685 driver,"
             #       "and is it connected?")
         try:
-            pwm.set_pwm_freq(60)
+            if DONOTUSE_PCA_DRIVER is False:
+                pwm.set_pwm_freq(60)
         except:
             logging.warning(
                 "Failed to set the pwm frequency - did the servo driver initialize correctly?")
@@ -221,7 +229,8 @@ class Leg(object):
 
                 # send the servo the pulse, to set the angle
                 try:
-                    PWM.set_pwm(self.channel, self.channel, pulse)
+                    if DONOTUSE_PCA_DRIVER is False:
+                        PWM.set_pwm(self.channel, self.channel, pulse)
                 except:
                     logging.warning(
                         "Failed to set the pwm frequency - did the servo driver initialize correctly?")
@@ -289,8 +298,9 @@ class SmarsRobot(object):
     # This is used to model the robot, its legs and its sensors
     def __init__(self):
         try:
-            pwm = Adafruit_PCA9685.PCA9685()
-            pwm.set_pwm_freq(60)
+            if DONOTUSE_PCA_DRIVER is False:
+                pwm = Adafruit_PCA9685.PCA9685()
+                pwm.set_pwm_freq(60)
         except:
             logging.warning(
                 "Failed to set the pwm frequency - did the servo driver initialize correctly?")
