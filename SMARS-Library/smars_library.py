@@ -28,7 +28,7 @@ import logging
 import Adafruit_PCA9685
 logging.basicConfig(level=logging.CRITICAL)
 logging.propagate = False
-# DONOTUSE_PCA_DRIVER = False:
+
 # Initialise the PCA9685 using the default address (0x40).
 try:
     PWM = Adafruit_PCA9685.PCA9685()
@@ -38,6 +38,8 @@ except RuntimeError as error:
     DONOTUSE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
     # print("failed to initialise the servo driver (Adafruit PCA9685)")
     PWM = ""
+except:
+    print("(1) There was an error loading the adafruit driver")
 else:
     log_string = "PCA9685 Driver loaded)."
     DONOTUSE_PCA_DRIVER = False # tell later parts of the code to use the driver
