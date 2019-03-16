@@ -22,7 +22,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 2.7.10",
     ],
     packages=["smars_library"],
     include_package_data=False,
