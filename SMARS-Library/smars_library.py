@@ -41,6 +41,7 @@ except OSError as error:
     PWM = ""
 except:
     print("(1) There was an error loading the adafruit driver")
+    DONOTUSE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
 else:
     log_string = "PCA9685 Driver loaded)."
     DONOTUSE_PCA_DRIVER = False # tell later parts of the code to use the driver
