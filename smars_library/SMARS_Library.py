@@ -19,6 +19,9 @@ If you're running Wheezy or something-other-than-Occidentalis, you will need to
 add the following lines to /etc/modules
  - i2c-dev
  - i2c-bcm2708
+
+create a virtual environment (venv) and use the pip install -r requirements.txt to install the dependencies
+
 """
 import time
 import logging
