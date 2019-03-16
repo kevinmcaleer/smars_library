@@ -26,5 +26,5 @@ setup(
     ],
     packages=["smars_library"],
     include_package_data=False,
-    install_requires=["adafruit-circuitpython-pca9685"],
+    install_requires=["adafruit-pca9685"],
     )
