@@ -2,3 +2,6 @@ build
 dist
 *.egg-info
 .DS_Store
+*.pyc
+SMARS-Library/__pycache__/*.pyc
+.DS_Store
