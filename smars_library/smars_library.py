@@ -576,6 +576,10 @@ class SmarsRobot(object):
         telemetry.append(["right_leg_front", self.legs[RIGHT_LEG_FRONT].leg_angle])
         telemetry.append(["left_leg_back", self.legs[LEFT_LEG_BACK].leg_angle])
         telemetry.append(["right_leg_back", self.legs[RIGHT_LEG_BACK].leg_angle])
+        telemetry.append(["left_foot_front", self.legs[LEFT_FOOT_FRONT].leg_angle])
+        telemetry.append(["right_foot_front", self.legs[RIGHT_FOOT_FRONT].leg_angle])
+        telemetry.append(["left_foot_back", self.legs[LEFT_FOOT_BACK].leg_angle])
+        telemetry.append(["right_foot_back", self.legs[RIGHT_FOOT_BACK].leg_angle])
         return telemetry
 
 class SMARSColor(object):
