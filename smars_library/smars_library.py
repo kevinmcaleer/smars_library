@@ -115,6 +115,8 @@ class Leg(object):
     currentangle = 0
     invert = False
     leg_angle = 0
+    leg_minAngle = 0
+    leg_maxAngle = 180
 
     def __init__(self, name, channel, leg_minangle, leg_maxangle, invert):
         # Initialises the leg object
