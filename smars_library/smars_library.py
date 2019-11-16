@@ -213,11 +213,6 @@ class Leg(object):
         print(self.channel)
         print(self.name)
 
-    # def moveTo(self, position):
-    #     # obsolete - use setAngle instead
-    #     pwm.set_pwm(self.channel, self.channel, position)
-    #     time.sleep(sleep_count)
-
     def setangle(self, angle):
         # Works out the value of the angle by mapping the leg_min and leg_max to between 0 and 180 degrees
         # Then moves the limb to that position
