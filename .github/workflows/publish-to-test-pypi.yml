@@ -27,7 +27,7 @@ jobs:
         --out-dir dist/
         .
     - name: Publish distribution to Test TestPyPI
-      uses: pypa/gh-actions-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.test_pypi_password }}
         repository_url: https://test.pypi.org/legacy/
