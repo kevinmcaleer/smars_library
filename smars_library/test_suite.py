@@ -1,5 +1,5 @@
 import unittest
-import constants
+from constants import Channel
 
 # from SMARS_Library import leg
 # from SMARS_Library import Leg
@@ -53,8 +53,9 @@ class TestConstants(unittest.TestCase):
     def test_leftlegfront(self):
         """ tests the leftlegfront constant is accessible as a global without
         global keyword """
-        value == LEFT_LEG_FRONT
-        self.assertTrue(value = 2)
+        chan = Channel()
+        value = chan.LEFT_LEG_FRONT
+        self.assertTrue(value == 2)
 
 if __name__ == '__main__':
     unittest.main()
