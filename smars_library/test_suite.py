@@ -1,4 +1,5 @@
 import unittest
+import constants
 
 # from SMARS_Library import leg
 # from SMARS_Library import Leg
@@ -46,6 +47,14 @@ class TestLegSetBody(unittest.TestCase):
         l = Leg(channel=0, leg_minangle=0, leg_maxangle=180, invert=False, name="testbot")
         self.assertIsNone(l.setbody())
 
+class TestConstants(unittest.TestCase):
+    """ tests constants.py """
+
+    def test_leftlegfront(self):
+        """ tests the leftlegfront constant is accessible as a global without
+        global keyword """
+        value == LEFT_LEG_FRONT
+        self.assertTrue(value = 2)
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,12 +20,14 @@ add the following lines to /etc/modules
  - i2c-dev
  - i2c-bcm2708
 
-create a virtual environment (venv) and use the pip install -r requirements.txt to install the dependencies
+create a virtual environment (venv) and use the pip install -r requirements.txt
+to install the dependencies
 
 """
 import time
 import logging
 import Adafruit_PCA9685
+from constants import Channel
 logging.basicConfig(level=logging.CRITICAL)
 logging.propagate = False
 
@@ -33,50 +35,41 @@ logging.propagate = False
 try:
     PWM = Adafruit_PCA9685.PCA9685()
 except OSError as error:
-    # print(error)
-    log_string = "failed to initialise the servo driver (Adafruit PCA9685): "
-    logging.error(log_string)
-    DONOTUSE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
-    # print("failed to initialise the servo driver (Adafruit PCA9685)")
+    LOG_STRING = "failed to initialise the servo driver (Adafruit PCA9685): "
+    logging.error(LOG_STRING)
+
+    # tell later parts of the code not to actually use the driver
+    do_no_use_PCA_driver = True
+
     PWM = ""
 except:
     print("There was an error loading the adafruit driver; loading without PCA9685.")
-    DONOTUSE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
+    do_no_use_PCA_driver = True # tell later parts of the code not to actually use the driver
 else:
-    log_string = "PCA9685 Driver loaded)."
-    DONOTUSE_PCA_DRIVER = False # tell later parts of the code to use the driver
-    logging.error(log_string)
-    # print("failed to initialise the servo driver (Adafruit PCA9685)")
-    # PWM = ""
+    LOG_STRING = "PCA9685 Driver loaded)."
+    do_no_use_PCA_driver = False # tell later parts of the code to use the driver
+    logging.error(LOG_STRING)
+
 # Configure min and max servo pulse lengths
-servo_min = 150  # Min pulse length out of 4096
-servo_max = 600  # Max pulse length out of 4096
-SLEEP_COUNT = 0.05  # the amount of time to wait between pwm operations
+servo_min = 150       # Min pulse length out of 4096
+servo_max = 600       # Max pulse length out of 4096
+SLEEP_COUNT = 0.05    # the amount of time to wait between pwm operations
 
-# setup legs and feet to correspond to the correct channel
-LEFT_LEG_FRONT = 0  # channel 0
-LEFT_LEG_BACK = 1  # channel 2
-RIGHT_LEG_FRONT = 2  # channel 6
-RIGHT_LEG_BACK = 3  # channel 4
 
-LEFT_FOOT_FRONT = 0  # channel 1
-LEFT_FOOT_BACK = 1  # channel 3
-RIGHT_FOOT_FRONT = 2  # channel 7
-RIGHT_FOOT_BACK = 3  # channel 5
 
 # Set frequency to 60hz, good for servos.
 try:
-    if DONOTUSE_PCA_DRIVER is False:
+    if do_no_use_PCA_driver is False:
         PWM.set_pwm_freq(60)
 except ValueError as error:
-    log_string = "failed to set the pwm frequency:, " + error
-    logging.error(log_string)
-    # print("failed to set the pwm frequency")
-
-# Helper function to make setting a servo pulse width simpler.
+    LOG_STRING = "failed to set the pwm frequency:, " + error
+    logging.error(LOG_STRING)
 
 
 def set_servo_pulse(channel, pulse):
+    """
+    Helper function to make setting a servo pulse width simpler.
+    """
     # type: (int, int) -> boolean
     if 0 <= channel <= 15 and \
        type(channel) is int and \
@@ -90,7 +83,7 @@ def set_servo_pulse(channel, pulse):
         pulse *= 1000
         pulse //= pulse_length
         try:
-            if DONOTUSE_PCA_DRIVER is False:
+            if do_no_use_PCA_driver is False:
                 PWM.set_pwm(channel, 0, pulse)
         except:
             logging.warning(
@@ -98,15 +91,18 @@ def set_servo_pulse(channel, pulse):
             # print("Failed to set pwm - did the driver initialize correctly?")
 
         return True
-    else:
-        print("channel less than 0 or greater than 15, or not an integer, or pulse is greater than 4096:", channel, pulse)
-        logging.warning(
-            "channel less than 0 or greater than 15, or not an integer, or pulse is greater than 4096.")
-        return False
+
+    print("channel less than 0 or greater than 15, or not an integer, \
+    or pulse is greater than 4096:", channel, pulse)
+    logging.warning(
+        "channel less than 0 or greater than 15, or not an integer, or pulse is greater than 4096.")
+    return False
 
 
 class Leg(object):
-    # provides a model of a limb (for either a foot or a leg)
+    """
+    provides a model of a limb (for either a foot or a leg)
+    """
     leg_min = 150
     leg_max = 600
     swingangle = 0
@@ -121,20 +117,20 @@ class Leg(object):
     def __init__(self, name, channel, leg_minangle, leg_maxangle, invert):
         # Initialises the leg object
         try:
-            if DONOTUSE_PCA_DRIVER is False:
+            if do_no_use_PCA_driver is False:
                 pwm = Adafruit_PCA9685.PCA9685()
         except RuntimeError as error:
-            logging.warning("The servo driver failed to initialise - have you installed the adafruit PCA9685 driver,"
-                            "and is it connected?")
-            # print("The servo driver failed to initialise - have you installed the adafruit PCA9685 driver,"
-            #       "and is it connected?")
+            logging.warning("The servo driver failed to initialise  \
+            - have you installed the adafruit PCA9685 driver, \
+            and is it connected?")
+            logging.warning(error)
+
         try:
-            if DONOTUSE_PCA_DRIVER is False:
+            if do_no_use_PCA_driver is False:
                 pwm.set_pwm_freq(60)
         except:
             logging.warning(
                 "Failed to set the pwm frequency - did the servo driver initialize correctly?")
-            # print("Failed to set the pwm frequency - did the servo driver initialize correctly?")
 
         self.name = name
         self.channel = channel
@@ -142,7 +138,7 @@ class Leg(object):
         self.leg_maxangle = leg_maxangle
         self.invert = invert
 
-        if self.invert == False:
+        if not self.invert:
             self.bodyangle = self.leg_minangle
             self.stretchangle = self.leg_maxangle
             self.swingangle = (self.leg_minangle / 2) + self.leg_minangle
@@ -153,12 +149,17 @@ class Leg(object):
         self.currentangle = self.bodyangle
 
     def setdefault(self):
-        # Sets the limb to the default angle, by dividing the maximum and minimum angles that were set previously
+        """
+        Sets the limb to the default angle, by dividing the maximum and
+        minimum angles that were set previously
+        """
         self.setangle(self.leg_maxangle - self.leg_minangle)
         self.currentangle = self.leg_maxangle - self.leg_minangle
 
     def setbody(self):
-        # Sets the limb to its body position.
+        """
+        Sets the limb to its body position.
+        """
         if not self.invert:
             self.setangle(self.leg_minangle)
             self.bodyangle = self.leg_minangle
@@ -168,7 +169,9 @@ class Leg(object):
         self.currentangle = self.bodyangle
 
     def setstretch(self):
-        # Sets the limb to its stretch position.
+        """
+        Sets the limb to its stretch position.
+        """
         if not self.invert:
             self.setangle(self.leg_maxangle)
             self.stretchangle = self.leg_maxangle
@@ -178,44 +181,55 @@ class Leg(object):
         self.currentangle = self.stretchangle
 
     def setswing(self):
-        # Sets the limb to its swing position, which is 45 degrees - halfway between the body and stretch position.
-        # a = 0
-        # print "Max Angle", self.leg_maxAngle, "Min angle", self.leg_minAngle, "Invert:", self.invert
+        """
+        Sets the limb to its swing position, which is 45 degrees - halfway
+        between the body and stretch position.
+        """
         if not self.invert:
-            a = (self.leg_minangle / 2) + self.leg_minangle
-            self.setangle(a)
+            swing_angle = (self.leg_minangle / 2) + self.leg_minangle
+            self.setangle(swing_angle)
         else:
-            a = (self.leg_maxangle - self.leg_minangle) / 2
-            self.setangle(a)
-        self.swingangle = a
+            swing_angle = (self.leg_maxangle - self.leg_minangle) / 2
+            self.setangle(swing_angle)
+        self.swingangle = swing_angle
         self.currentangle = self.swingangle
 
     def up(self):
-        # raises the limb to its minimum angle
+        """
+        raises the limb to its minimum angle
+        """
         if not self.invert:
             self.setangle(self.leg_minangle)
         else:
             self.setangle(self.leg_maxangle)
 
     def down(self):
-        # lowers the limb to its maximum angle
+        """
+        lowers the limb to its maximum angle
+        """
         if not self.invert:
             self.setangle(self.leg_maxangle)
         else:
             self.setangle(self.leg_minangle)
 
     def middle(self):
-        #  moves the limb to half way between up and down.
+        """
+        moves the limb to half way between up and down.
+        """
         self.setangle(self.leg_maxangle - self.leg_minangle)
 
     def show(self):
-        # used for debugging - shows the servo driver channel number and the limb name
+        """
+        used for debugging - shows the servo driver channel number and the limb name
+        """
         print(self.channel)
         print(self.name)
 
     def setangle(self, angle):
-        # Works out the value of the angle by mapping the leg_min and leg_max to between 0 and 180 degrees
-        # Then moves the limb to that position
+        """
+        Works out the value of the angle by mapping the leg_min and leg_max to
+        between 0 and 180 degrees, then moves the limb to that position
+        """
         pulse = 0
 
         if angle >= 0 and angle <= 180:
@@ -229,25 +243,22 @@ class Leg(object):
 
                 # send the servo the pulse, to set the angle
                 try:
-                    if DONOTUSE_PCA_DRIVER is False:
+                    if do_no_use_PCA_driver is False:
                         PWM.set_pwm(self.channel, self.channel, pulse)
                 except RuntimeError as error:
-                    logging.warning(
-                        "Failed to set the pwm frequency - did the servo driver initialize correctly?")
-                    # print("Failed to set pwm - did the servo driver initialize correctly?")
+                    logging.warning("Failed to set the pwm frequency - \
+                    did the servo driver initialize correctly?")
                 self.currentangle = angle
                 return True
 
-            else:
-                # display an error message if the angle set was outside the range (leg_minAngle and leg_maxAngle)
-                logging.warning(
-                    "Warning: angle was outside of bounds for this leg")
-                # print "Warning: angle was outside of bounds for this leg: ", self.name, angle, \
-                # "Minimum:", self.leg_minAngle, "Maximum:", self.leg_maxAngle
-                return False
+
+            # display an error message if the angle set was outside
+            # the range (leg_minAngle and leg_maxAngle)
+            logging.warning("Warning: angle was outside of bounds for this leg")
+            return False
         else:
-            logging.warning(
-                "Warning: angle was less than 0 or greater than 180.")
+            logging.warning("Warning: angle was less than 0 or greater \
+            than 180.")
             return False
 
     def untick(self):
@@ -258,53 +269,49 @@ class Leg(object):
                 # print self.name, "setting angle to ", self.currentAngle
                 self.setangle(self.currentangle)
                 return False
-            else:
-
-                return True
+            return True
         elif self.name == "left_leg_back" or self.name == "left_leg_front":
             if self.currentangle >= self.leg_minangle:
                 self.currentangle -= 2
                 # print self.name, "setting angle to ", self.currentAngle
                 self.setangle(self.currentangle)
                 return False
-            else:
-                # print "angle met:", self.currentAngle, "max angle:", self.leg_maxAngle, "min angle:", self.leg_minAngle
-                return True
-
+            return True
+        return True
     def tick(self):
-        # Used for walking forward.
-        # Each tick received changes the current angle of the limb, unless an limit is reached, which then returns a true value
+        """
+        Used for walking forward.
+        Each tick received changes the current angle of the limb, unless an
+        limit is reached, which then returns a true value
+        """
         if self.name == "left_leg_front" or self.name == "left_leg_back":
             if self.currentangle <= self.leg_maxangle:
                 self.currentangle += 2
                 # print self.name, "setting angle to ", self.currentAngle
                 self.setangle(self.currentangle)
                 return False
-            else:
-                # print "angle met:", self.currentAngle
-                return True
+            return True
         elif self.name == "right_leg_front" or self.name == "right_leg_back":
             if self.currentangle >= self.leg_minangle:
                 self.currentangle -= 2
                 # print self.name, "setting angle to ", self.currentAngle
                 self.setangle(self.currentangle)
                 return False
-            else:
-                # print "angle met:", self.currentAngle, "max angle:", self.leg_maxAngle, "min angle:", self.leg_minAngle
-                return True
-
+            return True
+        return True
 
 class SmarsRobot(object):
-    # This is used to model the robot, its legs and its sensors
+    """
+    This is used to model the robot, its legs and its sensors
+    """
     def __init__(self):
         try:
-            if DONOTUSE_PCA_DRIVER is False:
+            if do_no_use_PCA_driver is False:
                 pwm = Adafruit_PCA9685.PCA9685()
                 pwm.set_pwm_freq(60)
         except RuntimeError as error:
             logging.warning(
                 "Failed to set the pwm frequency - did the servo driver initialize correctly?")
-            # print("The Servo Driver failed to initialise, is the driver installed and the board plugged in?")
 
     # defines if the robot is a quad or wheel based robot
     # need to make this an enum then set the type to be one of the items in the list
@@ -337,109 +344,111 @@ class SmarsRobot(object):
     # print "number of legs", len(legs)
 
     def setname(self, name):
-        # Sets the robots name, used for displaying console messages.
+        """
+        Sets the robots name, used for displaying console messages.
+        """
         self.name = name
         print("***", name, "Online ***")
 
     def leg_reset(self):
-        # used to reset all the legs
-        for l in self.legs:
-            l.setdefault()
+        """
+        used to reset all the legs
+        """
+        for limb in self.legs:
+            limb.setdefault()
 
     def middle(self):
-        # used to position all the legs into the middle position
+        """
+        used to position all the legs into the middle position
+        """
         print("received middle command")
-        for l in self.legs:
-            l.middle()
-            # l.show()
+        for limb in self.legs:
+            limb.middle()
 
     def sit(self):
-        # used to sit the robot down
+        """
+        used to sit the robot down
+        """
         print(self.name, "sitting Down.")
-        for l in self.feet:
-            l.down()
+        for limb in self.feet:
+            limb.down()
 
     def stand(self):
+        """
+        used to stand the robot up
+        """
         print(self.name, "standing up.")
-        for l in self.feet:
-            l.up()
+        for limb in self.feet:
+            limb.up()
 
     def setswing(self):
-        for l in range(0, 4):
-            self.feet[l].down()
+        """
+        Moves the limb to the swing position
+        """
+        for limb in range(0, 4):
+            self.feet[limb].down()
             time.sleep(SLEEP_COUNT)
-            self.legs[l].setswing()
+            self.legs[limb].setswing()
             time.sleep(SLEEP_COUNT)
-            self.feet[l].up()
+            self.feet[limb].up()
             time.sleep(SLEEP_COUNT)
 
     def turnright(self):
-        global LEFT_LEG_FRONT
-        global LEFT_LEG_BACK
-        global RIGHT_LEG_FRONT
-        global RIGHT_LEG_BACK
-        global LEFT_FOOT_FRONT
-        global LEFT_FOOT_BACK
-        global RIGHT_FOOT_FRONT
-        global RIGHT_FOOT_BACK
+        """
+        turns the robot to the right
+        """
+
+        chan = Channel()
+
         print(self.name, "Turning Right.")
 
         # move legs one at a time back to swing position
         self.setswing()
 
         # twist body
-        self.legs[RIGHT_LEG_FRONT].setstretch()
-        self.legs[RIGHT_LEG_BACK].setbody()
-        self.legs[LEFT_LEG_FRONT].setbody()
-        self.legs[LEFT_LEG_BACK].setstretch()
+        self.legs[chan.RIGHT_LEG_FRONT].setstretch()
+        self.legs[chan.RIGHT_LEG_BACK].setbody()
+        self.legs[chan.LEFT_LEG_FRONT].setbody()
+        self.legs[chan.LEFT_LEG_BACK].setstretch()
         time.sleep(SLEEP_COUNT)
 
         # move legs one at a time back to swing position
         self.setswing()
 
     def turnleft(self):
-        global LEFT_LEG_FRONT
-        global LEFT_LEG_BACK
-        global RIGHT_LEG_FRONT
-        global RIGHT_LEG_BACK
-        global LEFT_FOOT_FRONT
-        global LEFT_FOOT_BACK
-        global RIGHT_FOOT_FRONT
-        global RIGHT_FOOT_BACK
+        """
+        turn robot left
+        """
+        chan = Channel()
         print(self.name, "Turning left.")
 
         # move legs one at a time back to swing position
         self.setswing()
 
         # twist body
-        self.legs[LEFT_LEG_FRONT].setstretch()
-        self.legs[LEFT_LEG_BACK].setbody()
-        self.legs[RIGHT_LEG_FRONT].setbody()
-        self.legs[RIGHT_LEG_BACK].setstretch()
+        self.legs[chan.LEFT_LEG_FRONT].setstretch()
+        self.legs[chan.LEFT_LEG_BACK].setbody()
+        self.legs[chan.RIGHT_LEG_FRONT].setbody()
+        self.legs[chan.RIGHT_LEG_BACK].setstretch()
         time.sleep(SLEEP_COUNT)
 
         # move legs one at a time back to swing position
         self.setswing()
 
     def walkforward(self, steps):
-        # used to move the robot forward.
+        """
+        Used to move the robot forward
+        """
 
         # include the global variables
-        global LEFT_LEG_FRONT
-        global LEFT_LEG_BACK
-        global RIGHT_LEG_FRONT
-        global RIGHT_LEG_BACK
-        global LEFT_FOOT_FRONT
-        global LEFT_FOOT_BACK
-        global RIGHT_FOOT_FRONT
-        global RIGHT_FOOT_BACK
+        chan = Channel()
 
         # set the legs to the correct position for walking.
         self.sit()
-        self.legs[LEFT_LEG_FRONT].setbody()
-        self.legs[LEFT_LEG_BACK].setbody()
-        self.legs[RIGHT_LEG_FRONT].setswing()
-        self.legs[RIGHT_LEG_BACK].setswing()
+        self.legs[chan.LEFT_LEG_FRONT].setbody()
+        self.legs[chan.LEFT_LEG_BACK].setbody()
+        self.legs[chan.RIGHT_LEG_FRONT].setswing()
+        self.legs[chan.RIGHT_LEG_BACK].setswing()
         self.stand()
 
         # the walking cycle, loops for the number of steps provided.
@@ -473,21 +482,14 @@ class SmarsRobot(object):
         """ used to move the robot backward. """
 
         # include the global variables
-        global LEFT_LEG_FRONT
-        global LEFT_LEG_BACK
-        global RIGHT_LEG_FRONT
-        global RIGHT_LEG_BACK
-        global LEFT_FOOT_FRONT
-        global LEFT_FOOT_BACK
-        global RIGHT_FOOT_FRONT
-        global RIGHT_FOOT_BACK
+        chan = Channel()
 
         # set the legs to the correct position for walking.
         self.sit()
-        self.legs[LEFT_LEG_FRONT].setbody()
-        self.legs[LEFT_LEG_BACK].setbody()
-        self.legs[RIGHT_LEG_FRONT].setswing()
-        self.legs[RIGHT_LEG_BACK].setswing()
+        self.legs[chan.LEFT_LEG_FRONT].setbody()
+        self.legs[chan.LEFT_LEG_BACK].setbody()
+        self.legs[chan.RIGHT_LEG_FRONT].setswing()
+        self.legs[chan.RIGHT_LEG_BACK].setswing()
         self.stand()
 
         # the walking cycle, loops for the number of steps provided.
@@ -520,63 +522,51 @@ class SmarsRobot(object):
 
     def clap(self, clap_count):
         """  Clap front two hands (the sound of two hands clapping) """
-        global LEFT_LEG_FRONT
-        global LEFT_LEG_BACK
-        global RIGHT_LEG_FRONT
-        global RIGHT_LEG_BACK
-        global LEFT_FOOT_FRONT
-        global LEFT_FOOT_BACK
-        global RIGHT_FOOT_FRONT
-        global RIGHT_FOOT_BACK
+        chan = Channel()
 
         self.sit()
         # self.feet[left_foot_front].up()
         # self.feet[right_foot_front].up()
         for _ in range(0, clap_count):
-            self.legs[LEFT_LEG_FRONT].setbody()
-            self.legs[RIGHT_LEG_FRONT].setbody()
+            self.legs[chan.LEFT_LEG_FRONT].setbody()
+            self.legs[chan.RIGHT_LEG_FRONT].setbody()
             time.sleep(SLEEP_COUNT * 2)
-            self.legs[LEFT_LEG_FRONT].setstretch()
-            self.legs[RIGHT_LEG_FRONT].setstretch()
+            self.legs[chan.LEFT_LEG_FRONT].setstretch()
+            self.legs[chan.RIGHT_LEG_FRONT].setstretch()
             time.sleep(SLEEP_COUNT * 2)
         self.stand()
 
     def wiggle(self, wiggle_count):
         """ Wiggle butt """
-        global LEFT_LEG_FRONT
-        global LEFT_LEG_BACK
-        global RIGHT_LEG_FRONT
-        global RIGHT_LEG_BACK
-        global LEFT_FOOT_FRONT
-        global LEFT_FOOT_BACK
-        global RIGHT_FOOT_FRONT
-        global RIGHT_FOOT_BACK
+
+        chan = Channel()
 
         self.sit()
-        self.legs[LEFT_FOOT_BACK].up()
-        self.legs[RIGHT_FOOT_BACK].up()
+        self.legs[chan.LEFT_FOOT_BACK].up()
+        self.legs[chan.RIGHT_FOOT_BACK].up()
         time.sleep(SLEEP_COUNT * 5)
 
         for _ in range(0, wiggle_count):
-            self.legs[LEFT_LEG_BACK].setbody()
-            self.legs[RIGHT_LEG_BACK].setstretch()
+            self.legs[chan.LEFT_LEG_BACK].setbody()
+            self.legs[chan.RIGHT_LEG_BACK].setstretch()
             time.sleep(SLEEP_COUNT * 5)
-            self.legs[LEFT_LEG_BACK].setstretch()
-            self.legs[RIGHT_LEG_BACK].setbody()
+            self.legs[chan.LEFT_LEG_BACK].setstretch()
+            self.legs[chan.RIGHT_LEG_BACK].setbody()
             time.sleep(SLEEP_COUNT * 5)
         self.stand()
 
     def get_telemetry(self):
         """ returns a list of limbs and measurements """
         telemetry = []
-        telemetry.append(["left_leg_front", self.legs[LEFT_LEG_FRONT].leg_angle])
-        telemetry.append(["right_leg_front", self.legs[RIGHT_LEG_FRONT].leg_angle])
-        telemetry.append(["left_leg_back", self.legs[LEFT_LEG_BACK].leg_angle])
-        telemetry.append(["right_leg_back", self.legs[RIGHT_LEG_BACK].leg_angle])
-        telemetry.append(["left_foot_front", self.legs[LEFT_FOOT_FRONT].leg_angle])
-        telemetry.append(["right_foot_front", self.legs[RIGHT_FOOT_FRONT].leg_angle])
-        telemetry.append(["left_foot_back", self.legs[LEFT_FOOT_BACK].leg_angle])
-        telemetry.append(["right_foot_back", self.legs[RIGHT_FOOT_BACK].leg_angle])
+        chan = Channel()
+        telemetry.append(["left_leg_front", self.legs[chan.LEFT_LEG_FRONT].leg_angle])
+        telemetry.append(["right_leg_front", self.legs[chan.RIGHT_LEG_FRONT].leg_angle])
+        telemetry.append(["left_leg_back", self.legs[chan.LEFT_LEG_BACK].leg_angle])
+        telemetry.append(["right_leg_back", self.legs[chan.RIGHT_LEG_BACK].leg_angle])
+        telemetry.append(["left_foot_front", self.legs[chan.LEFT_FOOT_FRONT].leg_angle])
+        telemetry.append(["right_foot_front", self.legs[chan.RIGHT_FOOT_FRONT].leg_angle])
+        telemetry.append(["left_foot_back", self.legs[chan.LEFT_FOOT_BACK].leg_angle])
+        telemetry.append(["right_foot_back", self.legs[chan.RIGHT_FOOT_BACK].leg_angle])
         return telemetry
 
 class SMARSColor(object):
@@ -649,13 +639,16 @@ class SMARSColor(object):
 
     @classmethod
     def cursor_up(cls, no_of_chars):
+        """ moves the cursor up"""
         print(u'\u001b[' + str(no_of_chars) + 'A')
 
     @classmethod
     def cursor_down(cls, no_of_chars):
+        """ moves the cursor down """
         print(u'\u001b[' + str(no_of_chars) + 'B')
 
     @classmethod
-    def set_position(cls, x, y):
-        s = u'\u001b[' + str(x) + ';' + str(y) + 'H'
-        print(s)
+    def set_position(cls, x_pos, y_pos):
+        """ sets the cursor position """
+        position = u'\u001b[' + str(x_pos) + ';' + str(y_pos) + 'H'
+        print(position)
