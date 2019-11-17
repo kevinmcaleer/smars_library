@@ -59,3 +59,5 @@ class TestConstants(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# TODO: Add the rest of the limb defaults
