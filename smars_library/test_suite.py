@@ -55,7 +55,7 @@ class TestConstants(unittest.TestCase):
         global keyword """
         chan = Channel()
         value = chan.LEFT_LEG_FRONT
-        self.assertTrue(value == 2)
+        self.assertTrue(value == 0)
 
 if __name__ == '__main__':
     unittest.main()
