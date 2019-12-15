@@ -1,2 +1,2 @@
 name = "smars_library"
-import constants
+from constants import Channel
