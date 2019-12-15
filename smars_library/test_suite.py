@@ -1,4 +1,5 @@
 import unittest
+from constants import Channel
 
 # from SMARS_Library import leg
 # from SMARS_Library import Leg
@@ -46,6 +47,17 @@ class TestLegSetBody(unittest.TestCase):
         l = Leg(channel=0, leg_minangle=0, leg_maxangle=180, invert=False, name="testbot")
         self.assertIsNone(l.setbody())
 
+class TestConstants(unittest.TestCase):
+    """ tests constants.py """
+
+    def test_leftlegfront(self):
+        """ tests the leftlegfront constant is accessible as a global without
+        global keyword """
+        chan = Channel()
+        value = chan.LEFT_LEG_FRONT
+        self.assertTrue(value == 0)
 
 if __name__ == '__main__':
     unittest.main()
+
+# TODO: Add the rest of the limb defaults
