@@ -25,7 +25,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.8",
     ],
-    packages=["smars_library", "smars_library.constants"],
+    packages=["smars_library"],
     include_package_data=False,
     install_requires=["adafruit-pca9685","pathlib"],
     )
