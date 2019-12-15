@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="smars_library",
-    version="0.1.8",
+    version="0.1.9",
     description="SMARS Robot Python Library",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -25,7 +25,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.8",
     ],
-    packages=["smars_library", smars_library.constants],
+    packages=["smars_library", "smars_library.constants"],
     include_package_data=False,
     install_requires=["adafruit-pca9685","pathlib"],
     )
