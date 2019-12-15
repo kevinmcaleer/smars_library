@@ -70,7 +70,7 @@ def set_servo_pulse(channel, pulse):
     """
     Helper function to make setting a servo pulse width simpler.
     """
-    # type: (int, int) -> boolean
+
     if 0 <= channel <= 15 and \
        type(channel) is int and \
        pulse <= 4096 and \
@@ -652,3 +652,28 @@ class SMARSColor(object):
         """ sets the cursor position """
         position = u'\u001b[' + str(x_pos) + ';' + str(y_pos) + 'H'
         print(position)
+
+
+class CommandHistory(object):
+    """ models the command history object """
+
+    history = []
+
+    def __init__(self):
+        self.history.append("*** new history ***")
+
+    def append(self, command):
+        """ adds a command to the command history """
+        self.history.append(command)
+
+    def clear(self):
+        """ clears the command history """
+        self.history = []
+
+    def get_history(self):
+        """ get all command history """
+        return self.history
+
+    def get_last_ten(self):
+        """ get last 10 command history """
+        return self.history[-10:]
