@@ -7,3 +7,4 @@ SMARS-Library/__pycache__/*.pyc
 .DS_Store
 .vscode
 venv
+__pycache__
