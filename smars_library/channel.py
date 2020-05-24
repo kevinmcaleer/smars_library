@@ -1,7 +1,3 @@
-"""
-constants.py
-"""
-
 class Channel():
     """
     setup legs and feet to correspond to the correct channel

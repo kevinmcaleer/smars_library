@@ -3,7 +3,7 @@ Unit tests for SMARS Library
 '''
 
 import unittest
-from constants import Channel
+from channel import Channel
 
 # from SMARS_Library import leg
 # from SMARS_Library import Leg

@@ -28,7 +28,7 @@ import time
 import logging
 import Adafruit_PCA9685
 # from constants import Channel
-from constants import Channel
+from channel import Channel
 logging.basicConfig(level=logging.CRITICAL)
 logging.propagate = False
 
