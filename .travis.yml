@@ -18,4 +18,4 @@ install:
   - pip install flask_sqlalchemy
   - pip install flask_wtf
   - pip install pathlib
-script: python smars_library/test_suite.py
+script: python test_suite.py

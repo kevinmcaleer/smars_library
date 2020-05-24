@@ -3,13 +3,14 @@ Unit tests for SMARS Library
 '''
 
 import unittest
-from .channel import Channel
+from smars_library.smars_library import *
+# from .channel import Channel
 
 # from SMARS_Library import leg
 # from SMARS_Library import Leg
-from smars_library import Leg
+from smars_library.smars_library import Leg
 # from SMARS_Library import set_servo_pulse
-from smars_library import set_servo_pulse
+from smars_library.smars_library import set_servo_pulse
 
 
 class SetServoPulseTestCase(unittest.TestCase):
