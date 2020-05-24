@@ -6,8 +6,10 @@ python:
   - 3.7
   - 3.8
 before_install:
+  - "pip install -U pip"
   - sudo apt-get install -y python-smbus
   - sudo apt-get install -y i2c-tools
+  - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
 install:
   - pip install unittest2
   - pip install adafruit_pca9685
