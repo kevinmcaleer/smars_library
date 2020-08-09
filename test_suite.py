@@ -46,9 +46,9 @@ class SetServoPulseTestCase(unittest.TestCase):
                        leg_maxangle=180,
                        invert=False,
                        name="testbot")
-        self.assertTrue(legtest3.setangle(0))
-        self.assertTrue(legtest3.setangle(180))
-        self.assertFalse(legtest3.setangle(181))
+        self.assertTrue(legtest3.angle(0))
+        self.assertTrue(legtest3.angle(180))
+        self.assertFalse(legtest3.angle(181))
 
 class TestLegSetdefault(unittest.TestCase):
     '''
@@ -60,7 +60,7 @@ class TestLegSetdefault(unittest.TestCase):
         tests set default
         '''
         leg = Leg(channel=0, leg_minangle=0, leg_maxangle=180, invert=False, name="testbot")
-        self.assertIsNone(leg.setdefault())
+        self.assertIsNone(leg.default())
 
 
 class TestLegSetBody(unittest.TestCase):
@@ -71,7 +71,7 @@ class TestLegSetBody(unittest.TestCase):
         test SetBody function
         '''
         leg = Leg(channel=0, leg_minangle=0, leg_maxangle=180, invert=False, name="testbot")
-        self.assertIsNone(leg.setbody())
+        self.assertIsNone(leg.body())
 
 class TestConstants(unittest.TestCase):
     """ tests constants.py """
