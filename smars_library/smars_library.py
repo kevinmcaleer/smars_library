@@ -622,14 +622,14 @@ class SmarsRobot(object):
         """ returns a list of limbs and measurements """
         telemetry = []
         chan = Channel()
-        telemetry.append(["left_leg_front", self.__legs[chan.LEFT_LEG_FRONT].leg_angle])
-        telemetry.append(["right_leg_front", self.__legs[chan.RIGHT_LEG_FRONT].leg_angle])
-        telemetry.append(["left_leg_back", self.__legs[chan.LEFT_LEG_BACK].leg_angle])
-        telemetry.append(["right_leg_back", self.__legs[chan.RIGHT_LEG_BACK].leg_angle])
-        telemetry.append(["left_foot_front", self.__legs[chan.LEFT_FOOT_FRONT].leg_angle])
-        telemetry.append(["right_foot_front", self.__legs[chan.RIGHT_FOOT_FRONT].leg_angle])
-        telemetry.append(["left_foot_back", self.__legs[chan.LEFT_FOOT_BACK].leg_angle])
-        telemetry.append(["right_foot_back", self.__legs[chan.RIGHT_FOOT_BACK].leg_angle])
+        telemetry.append(["left_leg_front", self.__legs[chan.LEFT_LEG_FRONT].__leg_angle])
+        telemetry.append(["right_leg_front", self.__legs[chan.RIGHT_LEG_FRONT].__leg_angle])
+        telemetry.append(["left_leg_back", self.__legs[chan.LEFT_LEG_BACK].__leg_angle])
+        telemetry.append(["right_leg_back", self.__legs[chan.RIGHT_LEG_BACK].__leg_angle])
+        telemetry.append(["left_foot_front", self.__legs[chan.LEFT_FOOT_FRONT].__leg_angle])
+        telemetry.append(["right_foot_front", self.__legs[chan.RIGHT_FOOT_FRONT].__leg_angle])
+        telemetry.append(["left_foot_back", self.__legs[chan.LEFT_FOOT_BACK].__leg_angle])
+        telemetry.append(["right_foot_back", self.__legs[chan.RIGHT_FOOT_BACK].__leg_angle])
         return telemetry
 
 class CommandHistory(object):
