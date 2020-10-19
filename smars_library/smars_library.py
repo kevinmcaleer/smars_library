@@ -171,7 +171,7 @@ class Leg(object):
 
     def default(self):
         """
-        Sets the limb to the default angle, by dividing the maximum and
+        Sets the limb to the default angle, by subtracting the maximum and
         minimum angles that were set previously
         """
         self.angle(self.__leg_maxangle - self.__leg_minangle)
