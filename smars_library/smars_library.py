@@ -266,6 +266,7 @@ class Leg(object):
         """
         print("This method is depricated - use .angle instead")
 
+    @angle.setter
     def angle(self, angle):
         """
         Works out the value of the angle by mapping the leg_min and leg_max to
@@ -374,23 +375,23 @@ class SmarsRobot(object):
     __name = ""  # the friendly name for the robot - used in console messages.
 
     # add each foot to the feet array
-    __feet.append(Leg(name='left_foot_front', channel=1,
+    __feet.append(Leg(name='LEFT_FOOT_FRONT', channel=1,
                     leg_minangle=50, leg_maxangle=150, invert=False))
-    __feet.append(Leg(name='left_foot_back', channel=3,
+    __feet.append(Leg(name='LEFT_FOOT_BACK', channel=3,
                     leg_minangle=50, leg_maxangle=150, invert=True))
-    __feet.append(Leg(name='right_foot_front', channel=7,
+    __feet.append(Leg(name='RIGHT_FOOT_FRONT', channel=7,
                     leg_minangle=50, leg_maxangle=150, invert=True))
-    __feet.append(Leg(name='right_foot_back', channel=5,
+    __feet.append(Leg(name='RIGHT_FOOT_BACK', channel=5,
                     leg_minangle=50, leg_maxangle=150, invert=False))
 
     # add each leg to the legs array
-    __legs.append(Leg(name='left_leg_front', channel=0,
+    __legs.append(Leg(name='LEFT_LEG_FRONT', channel=0,
                     leg_minangle=9, leg_maxangle=90, invert=True))
-    __legs.append(Leg(name='left_leg_back', channel=2,
+    __legs.append(Leg(name='LEFT_LEG_BACK', channel=2,
                     leg_minangle=90, leg_maxangle=180, invert=False))
-    __legs.append(Leg(name='right_leg_front', channel=6,
+    __legs.append(Leg(name='RIGHT_LEG_FRONT', channel=6,
                     leg_minangle=90, leg_maxangle=180, invert=False))
-    __legs.append(Leg(name='right_leg_back', channel=4,
+    __legs.append(Leg(name='RIGHT_LEG_BACK', channel=4,
                     leg_minangle=9, leg_maxangle=90, invert=True))
     # print "number of legs", len(legs)
 
