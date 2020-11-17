@@ -440,7 +440,7 @@ class SmarsRobot(object):
         """
         print(self.__name, "sitting Down.")
         for limb in self.__feet:
-            limb.down()
+            self.__feet[limb].down()
 
     def stand(self):
         """
@@ -448,7 +448,7 @@ class SmarsRobot(object):
         """
         print(self.name, "standing up.")
         for limb in self.__feet:
-            limb.up()
+            self.__feet[limb].up()
 
     def swing(self):
         """
