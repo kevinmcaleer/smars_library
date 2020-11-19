@@ -163,6 +163,7 @@ class Leg(object):
     def invert(self,invert):
         self.__invert = invert
 
+
     def setdefault(self):
         """
         DEPRICATED METHOD - USE .default
@@ -174,7 +175,7 @@ class Leg(object):
         Sets the limb to the default angle, by subtracting the maximum and
         minimum angles that were set previously
         """
-        self.angle(self.__leg_maxangle - self.__leg_minangle)
+        self.angle = self.__leg_maxangle - self.__leg_minangle
         self.__currentangle = self.__leg_maxangle - self.__leg_minangle
 
     def setbody(self):
@@ -188,10 +189,10 @@ class Leg(object):
         Sets the limb to its body position.
         """
         if not self.__invert:
-            self.angle(self.__leg_minangle)
+            self.angle = self.__leg_minangle
             self.__bodyangle = self.__leg_minangle
         else:
-            self.angle(self.__leg_maxangle)
+            self.angle = self.__leg_maxangle
             self.__bodyangle = self.__leg_maxangle
         self.__currentangle = self.__bodyangle
 
@@ -204,10 +205,10 @@ class Leg(object):
         Sets the limb to its stretch position.
         """
         if not self.__invert:
-            self.angle(self.__leg_maxangle)
+            self.angle = self.__leg_maxangle
             self.__stretchangle = self.__leg_maxangle
         else:
-            self.angle(self.__leg_minangle)
+            self.angle = self.__leg_minangle
             self.__stretchangle = self.__leg_minangle
         self.__currentangle = self.__stretchangle
 
@@ -222,10 +223,10 @@ class Leg(object):
         """
         if not self.invert:
             swing_angle = (self.__leg_minangle / 2) + self.__leg_minangle
-            self.angle(swing_angle)
+            self.angle = swing_angle
         else:
             swing_angle = (self.__leg_maxangle - self.__leg_minangle) / 2
-            self.angle(swing_angle)
+            self.angle = swing_angle
         self.__swingangle = swing_angle
         self.__currentangle = self.__swingangle
 
@@ -234,24 +235,24 @@ class Leg(object):
         raises the limb to its minimum angle
         """
         if not self.invert:
-            self.angle(self.__leg_minangle)
+            self.angle = self.__leg_minangle
         else:
-            self.angle(self.__leg_maxangle)
+            self.angle = self.__leg_maxangle
 
     def down(self):
         """
         lowers the limb to its maximum angle
         """
         if not self.invert:
-            self.angle(self.__leg_maxangle)
+            self.angle = self.__leg_maxangle
         else:
-            self.angle(self.__leg_minangle)
+            self.angle = self.__leg_minangle
 
     def middle(self):
         """
         moves the limb to half way between up and down.
         """
-        self.angle(self.__leg_maxangle - self.__leg_minangle)
+        self.angle = self.__leg_maxangle - self.__leg_minangle
 
     def show(self):
         """
@@ -309,14 +310,14 @@ class Leg(object):
             if self.__currentangle <= self.__leg_maxangle:
                 self.__currentangle += 2
                 # print self.name, "setting angle to ", self.currentAngle
-                self.angle(self.__currentangle)
+                self.angle = self.__currentangle
                 return False
             return True
         elif self.__name == "left_leg_back" or self.__name == "left_leg_front":
             if self.__currentangle >= self.__leg_minangle:
                 self.__currentangle -= 2
                 # print self.name, "setting angle to ", self.currentAngle
-                self.angle(self.__currentangle)
+                self.angle = self.__currentangle
                 return False
             return True
         return True
@@ -330,14 +331,14 @@ class Leg(object):
             if self.__currentangle <= self.__leg_maxangle:
                 self.__currentangle += 2
                 # print self.name, "setting angle to ", self.currentAngle
-                self.angle(self.__currentangle)
+                self.angle = self.__currentangle
                 return False
             return True
         elif self.__name == "right_leg_front" or self.__name == "right_leg_back":
             if self.__currentangle >= self.__leg_minangle:
                 self.__currentangle -= 2
                 # print self.name, "setting angle to ", self.currentAngle
-                self.angle(self.__currentangle)
+                self.angle = self.__currentangle
                 return False
             return True
         return True
