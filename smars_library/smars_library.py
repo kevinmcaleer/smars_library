@@ -182,7 +182,7 @@ class Leg(object):
         """
         DEPRICATED METHOD - USE .body
         """
-        print("this method is depricated, use .body instead")
+        print("Function setbody: this method is depricated, use .body instead")
 
     def body(self):
         """
@@ -534,10 +534,10 @@ class SmarsRobot(object):
 
         # set the legs to the correct position for walking.
         self.sit()
-        self.__legs[chan.LEFT_LEG_FRONT].setbody()
-        self.__legs[chan.LEFT_LEG_BACK].setbody()
-        self.__legs[chan.RIGHT_LEG_FRONT].setswing()
-        self.__legs[chan.RIGHT_LEG_BACK].setswing()
+        self.__legs[chan.LEFT_LEG_FRONT].body()
+        self.__legs[chan.LEFT_LEG_BACK].body()
+        self.__legs[chan.RIGHT_LEG_FRONT].swing()
+        self.__legs[chan.RIGHT_LEG_BACK].swing()
         self.stand()
 
         # the walking cycle, loops for the number of steps provided.
