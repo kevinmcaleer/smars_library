@@ -212,9 +212,11 @@ class Leg(object):
             self.__stretchangle = self.__leg_minangle
         self.__currentangle = self.__stretchangle
 
+
     def setswing(self):
         """ DEPRICATED - Use Swing instead"""
         print("This function is depricated use swing instead")
+
 
     def swing(self):
         """
@@ -460,7 +462,7 @@ class SmarsRobot(object):
         for limb in range(0, 4):
             self.__feet[limb].down()
             time.sleep(SLEEP_COUNT)
-            self.__legs[limb].setswing()
+            self.__legs[limb].swing()
             time.sleep(SLEEP_COUNT)
             self.__feet[limb].up()
             time.sleep(SLEEP_COUNT)
