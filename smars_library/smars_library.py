@@ -399,13 +399,20 @@ class SmarsRobot(object):
                     leg_minangle=9, leg_maxangle=90, invert=True))
     # print "number of legs", len(legs)
 
+    def invert_feet(self):
+        for limb in self.__feet:
+            if limb.invert == True:
+                limb.invert = False
+            else:
+                limb.invert = True:
+                
     def default(self):
         """ Sets the limb to the default position """
         for limb in self.__legs:
             limb.default()
         for limb in self.__feet:
             limb.default()
-            
+
 
     @property
     def name(self):
