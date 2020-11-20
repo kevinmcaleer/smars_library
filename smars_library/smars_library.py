@@ -444,7 +444,7 @@ class SmarsRobot(object):
         """
         print(self.__name, "sitting Down.")
         for limb in self.__feet:
-            self.__feet[limb].down()
+            limb.down()
 
     def stand(self):
         """
