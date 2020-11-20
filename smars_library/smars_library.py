@@ -263,11 +263,11 @@ class Leg(object):
         print(self.__channel)
         print(self.name)
 
-    def setangle(self, angle):
+    def setangle(self, value):
         """
         DEPRICATED METHOD - USE .angle
         """
-        print(f"This method is depricated - use .angle instead to set angle to {angle}")
+        print(f"This method is depricated - use .angle instead to set angle to {value}")
 
     @angle.setter
     def angle(self, user_angle):
