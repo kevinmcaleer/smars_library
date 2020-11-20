@@ -404,7 +404,7 @@ class SmarsRobot(object):
             if limb.invert == True:
                 limb.invert = False
             else:
-                limb.invert = True:
+                limb.invert = True
                 
     def default(self):
         """ Sets the limb to the default position """
