@@ -40,7 +40,7 @@ except OSError as error:
     logging.error(LOG_STRING)
 
     # tell later parts of the code not to actually use the driver
-   
+
     DO_NOT_USE_PCA_DRIVER = True
 
     PWM = ""
@@ -85,7 +85,7 @@ def set_servo_pulse(channel, pulse):
         pulse *= 1000
         pulse //= pulse_length
         try:
-            if do_no_use_PCA_driver is False:
+            if DO_NOT_USE_PCA_DRIVER is False:
                 PWM.set_pwm(channel, 0, pulse)
         except:
             logging.warning(
@@ -261,26 +261,26 @@ class Leg(object):
         print(self.__channel)
         print(self.name)
 
-    def setangle(self,angle):
+    def setangle(self, angle):
         """
         DEPRICATED METHOD - USE .angle
         """
-        print("This method is depricated - use .angle instead")
+        print(f"This method is depricated - use .angle instead to set angle to {angle}")
 
     @angle.setter
-    def angle(self, angle):
+    def angle(self, user_angle):
         """
         Works out the value of the angle by mapping the leg_min and leg_max to
         between 0 and 180 degrees, then moves the limb to that position
         """
         pulse = 0
 
-        if angle >= 0 and angle <= 180:
-            self.__leg_angle = angle
+        if user_angle >= 0 and user_angle <= 180:
+            self.__leg_angle = user_angle
             # Check the angle is within the boundaries for this limb
-            if angle >= self.__leg_minangle and angle <= self.__leg_maxangle:
+            if user_angle >= self.__leg_minangle and user_angle <= self.__leg_maxangle:
                 mapmax = self.__leg_max - self.__leg_min
-                percentage = (float(angle) / 180) * 100
+                percentage = (float(user_angle) / 180) * 100
                 pulse = int(((float(mapmax) / 100) *
                              float(percentage)) + self.__leg_min)
 
@@ -291,7 +291,8 @@ class Leg(object):
                 except RuntimeError as error:
                     logging.warning("Failed to set the pwm frequency - \
                     did the servo driver initialize correctly?")
-                self.__currentangle = angle
+                    logging.warning(error)
+                self.__currentangle = user_angle
                 return True
 
 
@@ -449,7 +450,8 @@ class SmarsRobot(object):
         """
         print(self.name, "standing up.")
         for limb in self.__feet:
-            self.__feet[limb].up()
+            # self.__feet[limb].up()
+            limb.up()
 
     def swing(self):
         """
