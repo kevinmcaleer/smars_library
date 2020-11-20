@@ -35,6 +35,10 @@ logging.propagate = False
 # Initialise the PCA9685 using the default address (0x40).
 try:
     PWM = Adafruit_PCA9685.PCA9685()
+    
+    # the short delay should help the PCA9685 settle and not produce errors
+    time.sleep(1)
+
 except OSError as error:
     LOG_STRING = "failed to initialise the servo driver (Adafruit PCA9685): "
     logging.error(LOG_STRING)
@@ -63,6 +67,7 @@ SLEEP_COUNT = 0.05    # the amount of time to wait between pwm operations
 try:
     if DO_NOT_USE_PCA_DRIVER is False:
         PWM.set_pwm_freq(60)
+        time.sleep(1)
 except ValueError as error:
     LOG_STRING = "failed to set the pwm frequency:, " + error
     logging.error(LOG_STRING)
