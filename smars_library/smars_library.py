@@ -32,6 +32,9 @@ from .channel import Channel
 logging.basicConfig(level=logging.CRITICAL)
 logging.propagate = False
 
+# Set DEBUG to True using the debug property
+DEBUG = False
+
 # Initialise the PCA9685 using the default address (0x40).
 try:
     PWM = Adafruit_PCA9685.PCA9685()
@@ -383,6 +386,9 @@ class SmarsRobot(object):
     __feet = []
     __name = ""  # the friendly name for the robot - used in console messages.
 
+    # debug status, default if off / False
+    __debug = False 
+
     # add each foot to the feet array
     __feet.append(Leg(name='LEFT_FOOT_FRONT', channel=1,
                     leg_minangle=50, leg_maxangle=150, invert=False))
@@ -403,6 +409,20 @@ class SmarsRobot(object):
     __legs.append(Leg(name='RIGHT_LEG_BACK', channel=4,
                     leg_minangle=9, leg_maxangle=90, invert=True))
     # print "number of legs", len(legs)
+
+    @property
+    def debug(self):
+        return DEBUG 
+    
+
+    @setter.debug
+    def debug(self, value):
+        if value == True:
+            self.__debug = True
+        elif value == False:
+            self.__debug == False
+        else:
+            print(f"Unknown value: {value}")
 
     def invert_feet(self):
         for limb in self.__feet:
@@ -433,15 +453,18 @@ class SmarsRobot(object):
         """
         self.__name = name
 
-        # TODO: add a logging level to output messages
-        print("***", name, "Online ***")
+        if self.debug:
+            # TODO: add a logging level to output messages
+            print("***", name, "Online ***")
 
     def setname(self,name):
         """
         Depricated - use the .name property
         """
         print("Depricated - use the .name property")
-        self.name = name
+        if self.debug:
+            print("actually setting the name property")
+            self.name = name
 
     def leg_reset(self):
         """
@@ -449,6 +472,8 @@ class SmarsRobot(object):
         """
         for limb in self.__legs:
             limb.default()
+            if self.debug:
+                print(f"setting limb {limb} to default position")
 
     def middle(self):
         """
@@ -528,6 +553,25 @@ class SmarsRobot(object):
 
         # move legs one at a time back to swing position
         self.swing()
+
+    def forward(self, steps=None):
+        """ Move the Robot Forward """
+        if steps == None:
+            steps = 1
+        walkforward(steps)
+
+    def backward(self, steps=None):
+        """ Move the Robot Backward """
+        if steps == None:
+            steps = 1
+        walkbackward(steps)    
+
+    def help(self):
+        print("This Robot accepts the following commands:")
+        print("Forward(<steps>)")
+        print("Backward(<steps>)")
+        print("turnleft()")
+        print("turnright()")
 
     def walkforward(self, steps):
         """
