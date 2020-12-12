@@ -678,9 +678,14 @@ class SmarsRobot(object):
                     self.__feet[tick_count].up()
                     time.sleep(SLEEP_COUNT)
 
-    def clap(self, clap_count):
+    def clap(self, clap_count=None):
         """  Clap front two hands (the sound of two hands clapping) """
         chan = Channel()
+
+        print("Clapping")
+
+        if clap_count is None:
+            clap_count = 1
 
         self.sit()
         # self.feet[left_foot_front].up()
@@ -694,8 +699,13 @@ class SmarsRobot(object):
             time.sleep(SLEEP_COUNT * 2)
         self.stand()
 
-    def wiggle(self, wiggle_count):
+    def wiggle(self, wiggle_count=None):
         """ Wiggle butt """
+
+        print("Wiggling")
+
+        if wiggle_count is None:
+            wiggle_count = 1
 
         chan = Channel()
 
