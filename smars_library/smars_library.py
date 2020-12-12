@@ -38,7 +38,7 @@ DEBUG = False
 # Initialise the PCA9685 using the default address (0x40).
 try:
     PWM = Adafruit_PCA9685.PCA9685()
-    
+
     # the short delay should help the PCA9685 settle and not produce errors
     time.sleep(1)
 
@@ -51,7 +51,7 @@ except OSError as error:
     DO_NOT_USE_PCA_DRIVER = True
 
     PWM = ""
-except:
+except (RuntimeError) as ex:
     print("There was an error loading the adafruit driver; loading without PCA9685.")
     DO_NOT_USE_PCA_DRIVER = True # tell later parts of the code not to actually use the driver
 else:
@@ -59,12 +59,7 @@ else:
     DO_NOT_USE_PCA_DRIVER = False # tell later parts of the code to use the driver
     logging.error(LOG_STRING)
 
-# Configure min and max servo pulse lengths
-servo_min = 150       # Min pulse length out of 4096
-servo_max = 600       # Max pulse length out of 4096
 SLEEP_COUNT = 0.05    # the amount of time to wait between pwm operations
-
-
 
 # Set frequency to 60hz, good for servos.
 try:
@@ -75,29 +70,29 @@ except ValueError as error:
     LOG_STRING = "failed to set the pwm frequency:, " + error
     logging.error(LOG_STRING)
 
-
 def set_servo_pulse(channel, pulse):
     """
     Helper function to make setting a servo pulse width simpler.
     """
 
     if 0 <= channel <= 15 and \
-       type(channel) is int and \
+       isinstance(channel,int)  and \
        pulse <= 4096 and \
        pulse >= 0:
         pulse_length = 1000000    # 1,000,000 us per second
         pulse_length //= 60       # 60 Hz
-        logging.info('{0}us per period'.format(pulse_length))
+        logging.info('%s us per period', pulse_length)
         pulse_length //= 4096     # 12 bits of resolution
-        logging.info('{0}us per bit'.format(pulse_length))
+        logging.info('%s us per bit', pulse_length)
         pulse *= 1000
         pulse //= pulse_length
         try:
             if DO_NOT_USE_PCA_DRIVER is False:
                 PWM.set_pwm(channel, 0, pulse)
-        except:
+        except (RuntimeError) as ex:
             logging.warning(
-                "Failed to set pwm - did the driver initialize correctly?")
+                """Failed to set pwm
+                 - did the driver initialize correctly? %s""", ex)
             # print("Failed to set pwm - did the driver initialize correctly?")
 
         return True
@@ -143,9 +138,10 @@ class Leg(object):
         try:
             if DO_NOT_USE_PCA_DRIVER is False:
                 pwm.set_pwm_freq(60)
-        except:
+        except (RuntimeError) as ex:
             logging.warning(
-                "Failed to set the pwm frequency - did the servo driver initialize correctly?")
+                """Failed to set the pwm frequency
+                 - did the servo driver initialize correctly?, %s""", ex)
 
         self.__name = name
         self.__channel = channel
@@ -165,11 +161,13 @@ class Leg(object):
 
     @property
     def invert(self):
+        """ returns the invert value """
         return self.__invert
 
     @invert.setter
-    def invert(self,invert):
-        self.__invert = invert
+    def invert(self,value):
+        """ sets the invert value"""
+        self.__invert = value
 
 
     def setdefault(self):
@@ -376,7 +374,8 @@ class SmarsRobot(object):
                 pwm.set_pwm_freq(60)
         except RuntimeError as error:
             logging.warning(
-                "Failed to set the pwm frequency - did the servo driver initialize correctly?")
+                "Failed to set the pwm frequency - did the servo driver initialize correctly? %s",
+                 error)
 
     # defines if the robot is a quad or wheel based robot
     # need to make this an enum then set the type to be one of the items in the list
@@ -388,7 +387,7 @@ class SmarsRobot(object):
     __name = ""  # the friendly name for the robot - used in console messages.
 
     # debug status, default if off / False
-    __debug = False 
+    __debug = False
 
     # add each foot to the feet array
     __feet.append(Leg(name='LEFT_FOOT_FRONT', channel=1,
@@ -413,25 +412,27 @@ class SmarsRobot(object):
 
     @property
     def debug(self):
-        return DEBUG 
-    
+        """ returns the debug status """
+        return self.__debug
+
 
     @debug.setter
     def debug(self, value):
-        if value == True:
+        if value:
             self.__debug = True
-        elif value == False:
-            self.__debug == False
+        elif not value:
+            self.__debug = False
         else:
             print(f"Unknown value: {value}")
 
     def invert_feet(self):
+        """ inverts the feet """
         for limb in self.__feet:
-            if limb.invert == True:
+            if limb.invert:
                 limb.invert = False
             else:
                 limb.invert = True
-                
+
     def default(self):
         """ Sets the limb to the default position """
         for limb in self.__legs:
@@ -453,10 +454,9 @@ class SmarsRobot(object):
         Sets the robots name, used for displaying console messages.
         """
         self.__name = name
-
+        print("***", name, "Online ***")
         if self.debug:
-            # TODO: add a logging level to output messages
-            print("***", name, "Online ***")
+            logging.info("changed name to %s", name)
 
     def setname(self,name):
         """
@@ -557,17 +557,18 @@ class SmarsRobot(object):
 
     def forward(self, steps=None):
         """ Move the Robot Forward """
-        if steps == None:
+        if steps is None:
             steps = 1
-        walkforward(steps)
+        self.walkforward(steps)
 
     def backward(self, steps=None):
         """ Move the Robot Backward """
-        if steps == None:
+        if steps is None:
             steps = 1
-        walkbackward(steps)    
+        self.walkbackward(steps)
 
     def help(self):
+        """ displays information about which functions can be used"""
         print("This Robot accepts the following commands:")
         print("forward(<steps>)")
         print("backward(<steps>)")
@@ -582,10 +583,15 @@ class SmarsRobot(object):
         print("body()")
         print("default()")
 
-    def walkforward(self, steps):
+    def walkforward(self, steps=None):
         """
         Used to move the robot forward
         """
+
+        print("Moving Forward")
+
+        if steps is None:
+            steps = 1
 
         # include the global variables
         chan = Channel()
@@ -603,31 +609,36 @@ class SmarsRobot(object):
         while current_step < steps:
             current_step += 1
 
-            for n in range(0, 4):
-                if not self.__legs[n].tick():
-                    self.__legs[n].tick()
+            for tick_count in range(0, 4):
+                if not self.__legs[tick_count].tick():
+                    self.__legs[tick_count].tick()
                 else:
-                    self.__feet[n].down()
+                    self.__feet[tick_count].down()
                     time.sleep(SLEEP_COUNT)
 
                     # change this to left and right legs, rather than invert or not invert
-                    if not self.__legs[n].invert:
-                        if self.__legs[n].name == "right_leg_front":
-                            self.__legs[n].stretch()
+                    if not self.__legs[tick_count].invert:
+                        if self.__legs[tick_count].name == "right_leg_front":
+                            self.__legs[tick_count].stretch()
                         else:
-                            self.__legs[n].body()
-                    elif self.__legs[n].invert:
-                        if self.__legs[n].name == "right_leg_back":
-                            self.__legs[n].body()
+                            self.__legs[tick_count].body()
+                    elif self.__legs[tick_count].invert:
+                        if self.__legs[tick_count].name == "right_leg_back":
+                            self.__legs[tick_count].body()
                         else:
-                            self.__legs[n].stretch()
+                            self.__legs[tick_count].stretch()
                     time.sleep(SLEEP_COUNT)
-                    self.__feet[n].up()
+                    self.__feet[tick_count].up()
                     time.sleep(SLEEP_COUNT)
 
     def walkbackward(self, steps):
         """ used to move the robot backward. """
 
+        print("Moving Backward")
+
+        if steps is None:
+            steps = 1
+
         # include the global variables
         chan = Channel()
 
@@ -643,28 +654,28 @@ class SmarsRobot(object):
         current_step = 0
         while current_step < steps:
             current_step += 1
-            for n in range(0, 4):
-                if not self.__legs[n].untick():
+            for tick_count in range(0, 4):
+                if not self.__legs[tick_count].untick():
                     # print self.name, "walking, step", currentStep, "of", steps
-                    self.__legs[n].untick()
+                    self.__legs[tick_count].untick()
                 else:
                     # print "moving leg:", self.legs[n].name
-                    self.__feet[n].down()
+                    self.__feet[tick_count].down()
                     time.sleep(SLEEP_COUNT)
 
                     # change this to left and right legs, rather than invert or not invert
-                    if not self.__legs[n].invert:
-                        if self.__legs[n].name == "left_leg_back":
-                            self.__legs[n].stretch()
+                    if not self.__legs[tick_count].invert:
+                        if self.__legs[tick_count].name == "left_leg_back":
+                            self.__legs[tick_count].stretch()
                         else:
-                            self.__legs[n].body()
-                    elif self.__legs[n].invert:
-                        if self.__legs[n].name == "left_leg_front":
-                            self.__legs[n].body()
+                            self.__legs[tick_count].body()
+                    elif self.__legs[tick_count].invert:
+                        if self.__legs[tick_count].name == "left_leg_front":
+                            self.__legs[tick_count].body()
                         else:
-                            self.__legs[n].stretch()
+                            self.__legs[tick_count].stretch()
                     time.sleep(SLEEP_COUNT)
-                    self.__feet[n].up()
+                    self.__feet[tick_count].up()
                     time.sleep(SLEEP_COUNT)
 
     def clap(self, clap_count):
