@@ -46,8 +46,13 @@ class SetServoPulseTestCase(unittest.TestCase):
                        leg_maxangle=180,
                        invert=False,
                        name="testbot")
-        self.assertTrue(legtest3.angle ==0)
+        legtest3.angle = 0
+        self.assertTrue(legtest3.angle == 0)
+
+        legtest3.angle = 180
         self.assertTrue(legtest3.angle == 180)
+
+        legtest3.angle = 181
         self.assertFalse(legtest3.angle == 181)
 
 class TestLegSetdefault(unittest.TestCase):

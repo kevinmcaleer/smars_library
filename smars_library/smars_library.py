@@ -275,7 +275,7 @@ class Leg(object):
         """
         DEPRICATED METHOD - USE .angle
         """
-        print(f"This method is depricated - use .angle instead to set angle to {value}")
+        print(f'This method is depricated - use .angle instead to set angle to {value}')
 
     @angle.setter
     def angle(self, user_angle):
@@ -369,6 +369,7 @@ class SmarsRobot(object):
     This is used to model the robot, its legs and its sensors
     """
     def __init__(self):
+        print("*** Initialising Robot ***")
         try:
             if DO_NOT_USE_PCA_DRIVER is False:
                 pwm = Adafruit_PCA9685.PCA9685()
@@ -415,7 +416,7 @@ class SmarsRobot(object):
         return DEBUG 
     
 
-    @setter.debug
+    @debug.setter
     def debug(self, value):
         if value == True:
             self.__debug = True
@@ -568,10 +569,18 @@ class SmarsRobot(object):
 
     def help(self):
         print("This Robot accepts the following commands:")
-        print("Forward(<steps>)")
-        print("Backward(<steps>)")
+        print("forward(<steps>)")
+        print("backward(<steps>)")
         print("turnleft()")
         print("turnright()")
+        print("clap()")
+        print("wiggle()")
+        print("get_telemetry()")
+        print("stand()")
+        print("sit()")
+        print("swing()")
+        print("body()")
+        print("default()")
 
     def walkforward(self, steps):
         """
