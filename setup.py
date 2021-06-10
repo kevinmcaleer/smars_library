@@ -1,7 +1,7 @@
 import pathlib
 from setuptools import setup
 
-# The directory contaoining this file
+# The directory containing this file
 HERE = pathlib.Path(__file__).parent
 
 # The text of the README file
@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="smars_library",
-    version="0.4.1",
+    version="0.4.2",
     description="SMARS Robot Python Library",
     long_description=README,
     long_description_content_type="text/markdown",

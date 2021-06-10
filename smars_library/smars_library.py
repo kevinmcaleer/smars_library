@@ -20,14 +20,13 @@ add the following lines to /etc/modules
  - i2c-dev
  - i2c-bcm2708
 
-create a virtual environment (venv) and use the pip install -r requirements.txt
+Create a virtual environment (venv) and use the pip install -r requirements.txt
 to install the dependencies
 
 """
 import time
 import logging
 import Adafruit_PCA9685
-# from constants import Channel
 from .channel import Channel
 logging.basicConfig(level=logging.CRITICAL)
 logging.propagate = False
@@ -92,8 +91,8 @@ def set_servo_pulse(channel, pulse):
         except (RuntimeError) as ex:
             logging.warning(
                 """Failed to set pwm
-                 - did the driver initialize correctly? %s""", ex)
-            # print("Failed to set pwm - did the driver initialize correctly?")
+                    - did the driver initialize correctly? %s""", ex)
+        # print("Failed to set pwm - did the driver initialize correctly?")
 
         return True
 
@@ -104,7 +103,7 @@ def set_servo_pulse(channel, pulse):
     return False
 
 
-class Leg(object):
+class Leg():
     """
     provides a model of a limb (for either a foot or a leg)
     """
@@ -116,8 +115,8 @@ class Leg(object):
     __currentangle = 0
     __invert = False
     __leg_angle = 0
-    __leg_minAngle = 0
-    __leg_maxAngle = 180
+    __leg_minangle = 0
+    __leg_maxangle = 180
 
     @property
     def angle(self):
@@ -269,12 +268,6 @@ class Leg(object):
         print(self.__channel)
         print(self.name)
 
-    def setangle(self, value):
-        """
-        DEPRICATED METHOD - USE .angle
-        """
-        print(f'This method is depricated - use .angle instead to set angle to {value}')
-
     @angle.setter
     def angle(self, user_angle):
         """
@@ -283,10 +276,10 @@ class Leg(object):
         """
         pulse = 0
 
-        if user_angle >= 0 and user_angle <= 180:
+        if 0 <= user_angle <= 180:
             self.__leg_angle = user_angle
             # Check the angle is within the boundaries for this limb
-            if user_angle >= self.__leg_minangle and user_angle <= self.__leg_maxangle:
+            if self.__leg_minangle <= user_angle <= self.__leg_maxangle:
                 mapmax = self.__leg_max - self.__leg_min
                 percentage = (float(user_angle) / 180) * 100
                 pulse = int(((float(mapmax) / 100) *
@@ -308,10 +301,6 @@ class Leg(object):
             # the range (leg_minAngle and leg_maxAngle)
             logging.warning("Warning: angle was outside of bounds for this leg")
             return False
-        else:
-            logging.warning("Warning: angle was less than 0 or greater \
-            than 180.")
-            return False
 
     def untick(self):
         """ Used to walk backwards """
@@ -322,7 +311,7 @@ class Leg(object):
                 self.angle = self.__currentangle
                 return False
             return True
-        elif self.__name == "left_leg_back" or self.__name == "left_leg_front":
+        if self.__name == "left_leg_back" or self.__name == "left_leg_front":
             if self.__currentangle >= self.__leg_minangle:
                 self.__currentangle -= 2
                 # print self.name, "setting angle to ", self.currentAngle
@@ -343,7 +332,7 @@ class Leg(object):
                 self.angle = self.__currentangle
                 return False
             return True
-        elif self.__name == "right_leg_front" or self.__name == "right_leg_back":
+        if self.__name == "right_leg_front" or self.__name == "right_leg_back":
             if self.__currentangle >= self.__leg_minangle:
                 self.__currentangle -= 2
                 # print self.name, "setting angle to ", self.currentAngle
@@ -362,7 +351,7 @@ class Leg(object):
         """ Sets the Robot name """
         self.__name = name
 
-class SmarsRobot(object):
+class SmarsRobot():
     """
     This is used to model the robot, its legs and its sensors
     """
@@ -384,7 +373,9 @@ class SmarsRobot(object):
     # setup two arrays, one for legs, and one for feet
     __legs = []
     __feet = []
-    __name = ""  # the friendly name for the robot - used in console messages.
+
+    # the friendly name for the robot - used in console messages
+    __name = ""
 
     # debug status, default if off / False
     __debug = False
@@ -457,15 +448,6 @@ class SmarsRobot(object):
         print("***", name, "Online ***")
         if self.debug:
             logging.info("changed name to %s", name)
-
-    def setname(self,name):
-        """
-        Depricated - use the .name property
-        """
-        print("Depricated - use the .name property")
-        if self.debug:
-            print("actually setting the name property")
-            self.name = name
 
     def leg_reset(self):
         """
@@ -737,7 +719,7 @@ class SmarsRobot(object):
         telemetry.append(["right_foot_back", self.__legs[chan.RIGHT_FOOT_BACK].angle])
         return telemetry
 
-class CommandHistory(object):
+class CommandHistory():
     """ models the command history object """
 
     # Private property History
@@ -759,15 +741,7 @@ class CommandHistory(object):
         """ gets all command history """
         return self.__history
 
-    def get_history(self):
-        """ DEPRICATED - use .history property"""
-        print("This function is depricated - use .history property")
-
     @property
     def last_ten(self):
         """ get last 10 command history """
         return self.__history[-10:]
-
-    def get_last_ten(self):
-        """ DEPRICATED - Use .last_ten property """
-        print("This function is deprecated - use .last_ten property instead")
