@@ -266,6 +266,16 @@ class Leg():
             self.__stretchangle = self.__leg_minangle
         self.__currentangle = self.__stretchangle
 
+    def identify(self):
+        """ Wiggles the limb between the angles of 85 - 95 for a couple of seconds """
+
+        # wiggle
+        for _ in range(1,5):
+            self.angle = 85
+            time.sleep(.25)
+            self.angle = 95
+            time.sleep(.25)
+        self.angle = 90
 
     def swing(self):
         """
@@ -445,6 +455,24 @@ class SmarsRobot():
     __legs.append(Leg(name='RIGHT_LEG_BACK', channel=4,
                     leg_minangle=9, leg_maxangle=90, invert=True))
     # print "number of legs", len(legs)
+
+    def identify(self, channel:int):
+        """ Identies the limb by the channel passed in """
+        found = False
+        for limb in self.__feet:
+            if limb['channel'] == channel:
+                found = True
+                print("limb found in Feet")
+                limb.identify()
+        for limb in self.__legs:
+            if limb['channel'] == channel:
+                found = True
+                print("limb found in Legs")
+                limb.identify()
+        if found:
+            print("Limb Found")
+        else:
+            print("Limb not found")
 
     @property
     def config(self)->dict:
