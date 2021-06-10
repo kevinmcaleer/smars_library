@@ -40,7 +40,7 @@ chans = { 'LEFT_LEG_FRONT': 0,    # channel 0
         'LEFT_FOOT_BACK': 3,    # channel 3
         'RIGHT_FOOT_FRONT': 7,  # channel 7
         'RIGHT_FOOT_BACK': 5,   # channel 5
-} 
+}
 
 # Set DEBUG to True using the debug property
 DEBUG = False
@@ -484,7 +484,8 @@ class SmarsRobot():
     def set_limb_channel(self, limb_name, channel)->bool:
         """ Sets the limb name to the channel provided, returns True if complete, False if not """
 
-        index = chans.get(channel)
+        index = chans.get(limb_name)
+        print(index)
 
         found = False
         for limb in self.__legs:
