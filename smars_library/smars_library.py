@@ -402,6 +402,29 @@ class SmarsRobot():
     # print "number of legs", len(legs)
 
     @property
+    def config(self):
+        """ Get the current limb configuration as a dictionary of settings"""
+        limb_config = []
+        temp_limb = []
+        for limb in self.__feet:
+            temp_limb = {'name': limb.name,
+                         'channel': limb.channel,
+                         'invert':limb.invert,
+                         'min_angle':limb.leg_minangle,
+                         'max_angle':limb.leg_maxangle
+                         }
+            limb_config.append(temp_limb)
+        for limb in self.__legs:
+            temp_limb = {'name': limb.name,
+                         'channel': limb.channel,
+                         'invert':limb.invert,
+                         'min_angle':limb.leg_minangle,
+                         'max_angle':limb.leg_maxangle
+                         }
+            limb_config.append(temp_limb)
+        return limb_config
+
+    @property
     def debug(self):
         """ returns the debug status """
         return self.__debug
