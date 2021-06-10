@@ -460,12 +460,12 @@ class SmarsRobot():
         """ Identies the limb by the channel passed in """
         found = False
         for limb in self.__feet:
-            if limb['channel'] == channel:
+            if limb.channel == channel:
                 found = True
                 print("limb found in Feet")
                 limb.identify()
         for limb in self.__legs:
-            if limb['channel'] == channel:
+            if limb.channel == channel:
                 found = True
                 print("limb found in Legs")
                 limb.identify()
