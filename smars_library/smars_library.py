@@ -271,9 +271,9 @@ class Leg():
 
         # wiggle
         for _ in range(1,5):
-            self.angle = 85
+            self.angle = 80
             time.sleep(.25)
-            self.angle = 95
+            self.angle = 100
             time.sleep(.25)
         self.angle = 90
 
