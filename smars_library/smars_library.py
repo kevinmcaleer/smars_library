@@ -31,6 +31,17 @@ from .channel import Channel
 logging.basicConfig(level=logging.CRITICAL)
 logging.propagate = False
 
+chans = { 'LEFT_LEG_FRONT': 0,    # channel 0
+        'LEFT_LEG_BACK': 2,     # channel 2
+        'RIGHT_LEG_FRONT': 6,   # channel 6
+        'RIGHT_LEG_BACK': 4,    # channel 4
+
+        'LEFT_FOOT_FRONT':  1,   # channel 1
+        'LEFT_FOOT_BACK': 3,    # channel 3
+        'RIGHT_FOOT_FRONT': 7,  # channel 7
+        'RIGHT_FOOT_BACK': 5,   # channel 5
+} 
+
 # Set DEBUG to True using the debug property
 DEBUG = False
 
@@ -473,14 +484,16 @@ class SmarsRobot():
     def set_limb_channel(self, limb_name, channel)->bool:
         """ Sets the limb name to the channel provided, returns True if complete, False if not """
 
+        index = chans.get(channel)
+
         found = False
         for limb in self.__legs:
             if limb.name == limb_name:
-                self.__legs[limb_name].channel = channel
+                self.__legs[index].channel = channel
                 found = True
         for limb in self.__feet:
             if limb.name == limb_name:
-                self.__feet[limb_name].channel = channel
+                self.__feet[index].channel = channel
                 found = True
 
         if found:

@@ -1,7 +1,5 @@
 class Channel():
-    """
-    setup legs and feet to correspond to the correct channel
-    """
+    """ setup legs and feet to correspond to the correct channel """
     LEFT_LEG_FRONT = 0    # channel 0
     LEFT_LEG_BACK = 1     # channel 2
     RIGHT_LEG_FRONT = 2   # channel 6
