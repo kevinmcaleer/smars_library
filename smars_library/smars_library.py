@@ -159,6 +159,69 @@ class Leg():
         self.__currentangle = self.__bodyangle
 
     @property
+    def leg_minangle(self):
+        """ Gets the minimum limb angle """
+        return self.__leg_minangle
+
+    @leg_minangle.setter
+    def leg_minangle(self,value:int) -> bool:
+        """ Sets the minimum limb angle """
+
+        if not isinstance(value, int):
+            print("Oops Limb Minimum Angle setter was expected the value to be an integer, \
+                please try again but with a valid number between 0 and 180.")
+            return False
+
+        if 0<= value <= 180:
+            self.__leg_minangle = value
+            return True
+
+        return False
+
+    @property
+    def leg_maxangle(self):
+        """ Gets the maximum limb angle """
+        return self.__leg_maxangle
+
+    @leg_maxangle.setter
+    def leg_maxangle(self,value:int) -> bool:
+        """ Sets the maximum limb angle """
+
+        if not isinstance(value, int):
+            print("Oops Limb Maximum Angle setter was expected the value to be an integer, \
+                please try again but with a valid number between 0 and 180.")
+            return False
+
+        if 0<= value <= 180:
+            self.__leg_maxangle = value
+            return True
+
+        return False
+
+    @property
+    def channel(self):
+        """ Returns the PCA9685 channel this servo/limb uses"""
+        return self.__channel
+
+    @channel.setter
+    def channel(self, value:int) -> bool:
+        """ Set the channel for this servo/limb """
+
+        if not isinstance(value, int):
+            print("Oops Limb channel setter was expected the value to be an integer, \
+                please try again but with a valid number between 0 and 15.")
+            return False
+
+        # Check its a valid channel number
+        if 0 <= value <= 15:
+            self.__channel = value
+            return True
+        print("Oops Limb channel setter was expected the value to be an integer, \
+             between 0 and 15.")
+        return False
+
+
+    @property
     def invert(self):
         """ returns the invert value """
         return self.__invert
@@ -169,12 +232,6 @@ class Leg():
         self.__invert = value
 
 
-    def setdefault(self):
-        """
-        DEPRICATED METHOD - USE .default
-        """
-        print("This method is depricated, use .default instead")
-
     def default(self):
         """
         Sets the limb to the default angle, by subtracting the maximum and
@@ -183,11 +240,6 @@ class Leg():
         self.angle = self.__leg_maxangle - self.__leg_minangle
         self.__currentangle = self.__leg_maxangle - self.__leg_minangle
 
-    def setbody(self):
-        """
-        DEPRICATED METHOD - USE .body
-        """
-        print("Function setbody: this method is depricated, use .body instead")
 
     def body(self):
         """
@@ -201,9 +253,6 @@ class Leg():
             self.__bodyangle = self.__leg_maxangle
         self.__currentangle = self.__bodyangle
 
-    def setstrech(self):
-        """ DEPRICATED METHOD - USE .stretch """
-        print("this method is depricated, use .stretch instead")
 
     def stretch(self):
         """
@@ -216,11 +265,6 @@ class Leg():
             self.angle = self.__leg_minangle
             self.__stretchangle = self.__leg_minangle
         self.__currentangle = self.__stretchangle
-
-
-    def setswing(self):
-        """ DEPRICATED - Use Swing instead"""
-        print("This function is depricated use swing instead")
 
 
     def swing(self):
@@ -269,7 +313,7 @@ class Leg():
         print(self.name)
 
     @angle.setter
-    def angle(self, user_angle):
+    def angle(self, user_angle:int) -> bool:
         """
         Works out the value of the angle by mapping the leg_min and leg_max to
         between 0 and 180 degrees, then moves the limb to that position
@@ -301,6 +345,7 @@ class Leg():
             # the range (leg_minAngle and leg_maxAngle)
             logging.warning("Warning: angle was outside of bounds for this leg")
             return False
+        return False
 
     def untick(self):
         """ Used to walk backwards """
@@ -342,12 +387,12 @@ class Leg():
         return True
 
     @property
-    def name(self):
+    def name(self)->str:
         """ gets the Robot name """
         return self.__name
 
     @name.setter
-    def name(self, name):
+    def name(self, name:str):
         """ Sets the Robot name """
         self.__name = name
 
@@ -402,7 +447,7 @@ class SmarsRobot():
     # print "number of legs", len(legs)
 
     @property
-    def config(self):
+    def config(self)->dict:
         """ Get the current limb configuration as a dictionary of settings"""
         limb_config = []
         temp_limb = []
@@ -425,13 +470,13 @@ class SmarsRobot():
         return limb_config
 
     @property
-    def debug(self):
+    def debug(self)->bool:
         """ returns the debug status """
         return self.__debug
 
 
     @debug.setter
-    def debug(self, value):
+    def debug(self, value:bool):
         if value:
             self.__debug = True
         elif not value:
@@ -456,14 +501,14 @@ class SmarsRobot():
 
 
     @property
-    def name(self):
+    def name(self)->str:
         """
         gets the robots name
         """
         return self.__name
 
     @name.setter
-    def name(self, name):
+    def name(self, name:str):
         """
         Sets the robots name, used for displaying console messages.
         """
@@ -560,13 +605,13 @@ class SmarsRobot():
         # move legs one at a time back to swing position
         self.swing()
 
-    def forward(self, steps=None):
+    def forward(self, steps:int=None):
         """ Move the Robot Forward """
         if steps is None:
             steps = 1
         self.walkforward(steps)
 
-    def backward(self, steps=None):
+    def backward(self, steps:int=None):
         """ Move the Robot Backward """
         if steps is None:
             steps = 1
@@ -588,7 +633,7 @@ class SmarsRobot():
         print("body()")
         print("default()")
 
-    def walkforward(self, steps=None):
+    def walkforward(self, steps:int=None):
         """
         Used to move the robot forward
         """
