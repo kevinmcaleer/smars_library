@@ -456,23 +456,43 @@ class SmarsRobot():
                     leg_minangle=9, leg_maxangle=90, invert=True))
     # print "number of legs", len(legs)
 
-    def identify(self, channel:int):
-        """ Identies the limb by the channel passed in """
-        found = False
+    def identify(self, channel:int)->str:
+        """ Identies the limb by the channel passed in, returns the limb name """
         for limb in self.__feet:
             if limb.channel == channel:
-                found = True
                 print("limb found in Feet")
                 limb.identify()
+                return limb.name
         for limb in self.__legs:
             if limb.channel == channel:
-                found = True
                 print("limb found in Legs")
                 limb.identify()
+                return limb.name
+        return "Limb not found"
+
+    def set_limb_channel(self, limb_name, channel)->bool:
+        """ Sets the limb name to the channel provided, returns True if complete, False if not """
+
+        found = False
+        for limb in self.__legs:
+            if limb.name == limb_name:
+                self.__legs[limb_name].channel = channel
+                found = True
+        for limb in self.__feet:
+            if limb.name == limb_name:
+                self.__feet[limb_name].channel = channel
+                found = True
+
         if found:
-            print("Limb Found")
-        else:
-            print("Limb not found")
+            # need to check which other limb still has this number
+            for limb in self.__legs:
+                if (limb.channel == channel) and (limb.name != limb_name):
+                    print("Remember to change", limb.name, "as this is still \
+                        using channel", channel)
+            return True
+        print("Limb name not found, sorry")
+        return False
+
 
     @property
     def config(self)->dict:
