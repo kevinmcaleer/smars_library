@@ -614,13 +614,31 @@ class SmarsRobot():
             limb.up()
 
     def swing(self):
-        """
-        Moves the limb to the swing position
-        """
+        """ Moves the limb to the swing position """
         for limb in range(0, 4):
             self.__feet[limb].down()
             time.sleep(SLEEP_COUNT)
             self.__legs[limb].swing()
+            time.sleep(SLEEP_COUNT)
+            self.__feet[limb].up()
+            time.sleep(SLEEP_COUNT)
+
+    def body(self):
+        """ moves all the limbs to the body position """
+        for limb in range(0, 4):
+            self.__feet[limb].down()
+            time.sleep(SLEEP_COUNT)
+            self.__legs[limb].body()
+            time.sleep(SLEEP_COUNT)
+            self.__feet[limb].up()
+            time.sleep(SLEEP_COUNT)
+
+    def stretch(self):
+        """ moves all the limbs to the body position """
+        for limb in range(0, 4):
+            self.__feet[limb].down()
+            time.sleep(SLEEP_COUNT)
+            self.__legs[limb].stretch()
             time.sleep(SLEEP_COUNT)
             self.__feet[limb].up()
             time.sleep(SLEEP_COUNT)
