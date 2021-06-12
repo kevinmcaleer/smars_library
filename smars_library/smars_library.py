@@ -370,14 +370,14 @@ class Leg():
 
     def untick(self):
         """ Used to walk backwards """
-        if self.__name == "right_leg_back" or self.__name == "right_leg_front":
+        if self.__name == "RIGHT_LEG_BACK" or self.__name == "RIGHT_LEG_FRONT":
             if self.__currentangle <= self.__leg_maxangle:
                 self.__currentangle += 2
                 # print self.name, "setting angle to ", self.currentAngle
                 self.angle = self.__currentangle
                 return False
             return True
-        if self.__name == "left_leg_back" or self.__name == "left_leg_front":
+        if self.__name == "LEFT_LEG_BACK" or self.__name == "LEFT_LEG_FRONT":
             if self.__currentangle >= self.__leg_minangle:
                 self.__currentangle -= 2
                 # print self.name, "setting angle to ", self.currentAngle
@@ -391,17 +391,17 @@ class Leg():
         Each tick received changes the current angle of the limb, unless an
         limit is reached, which then returns a true value
         """
-        if self.__name == "left_leg_front" or self.__name == "left_leg_back":
+        if self.__name == "LEFT_LEG_FRONT" or self.__name == "LEFT_LEG_BACK":
             if self.__currentangle <= self.__leg_maxangle:
                 self.__currentangle += 2
-                # print self.name, "setting angle to ", self.currentAngle
+                print(self.name, "Tick - setting angle to ", self.__currentangle)
                 self.angle = self.__currentangle
                 return False
             return True
-        if self.__name == "right_leg_front" or self.__name == "right_leg_back":
+        if self.__name == "RIGHT_LEG_FRONT" or self.__name == "RIGHT_LEG_BACK":
             if self.__currentangle >= self.__leg_minangle:
                 self.__currentangle -= 2
-                # print self.name, "setting angle to ", self.currentAngle
+                print(self.name, "Tick - setting angle to ", self.__currentangle)
                 self.angle = self.__currentangle
                 return False
             return True
@@ -748,14 +748,14 @@ class SmarsRobot():
 
                     # change this to left and right legs, rather than invert or not invert
                     if not self.__legs[tick_count].invert:
-                        if self.__legs[tick_count].name == "right_leg_front":
+                        if self.__legs[tick_count].name == "RIGHT_LEG_FRONT":
                             self.__legs[tick_count].stretch()
-                        else:
+                        if self.__legs[tick_count].name == "LEFT_LEG_FRONT":
                             self.__legs[tick_count].body()
-                    elif self.__legs[tick_count].invert:
-                        if self.__legs[tick_count].name == "right_leg_back":
+                    if self.__legs[tick_count].invert:
+                        if self.__legs[tick_count].name == "RIGHT_LEG_BACK":
                             self.__legs[tick_count].body()
-                        else:
+                        if self.__legs[tick_count].name == "LEFT_LEG_BACK":
                             self.__legs[tick_count].stretch()
                     time.sleep(SLEEP_COUNT)
                     self.__feet[tick_count].up()
@@ -795,12 +795,12 @@ class SmarsRobot():
 
                     # change this to left and right legs, rather than invert or not invert
                     if not self.__legs[tick_count].invert:
-                        if self.__legs[tick_count].name == "left_leg_back":
+                        if self.__legs[tick_count].name == "LEFT_LEG_BACK":
                             self.__legs[tick_count].stretch()
                         else:
                             self.__legs[tick_count].body()
                     elif self.__legs[tick_count].invert:
-                        if self.__legs[tick_count].name == "left_leg_front":
+                        if self.__legs[tick_count].name == "LEFT_LEG_FRONT":
                             self.__legs[tick_count].body()
                         else:
                             self.__legs[tick_count].stretch()
