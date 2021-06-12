@@ -747,14 +747,14 @@ class SmarsRobot():
                     time.sleep(SLEEP_COUNT)
 
                     # Old walking code - not very clear
-                    if self.__legs[tick_count].name == 'RIGHT_LEG_FRONT':
-                        self.__legs[tick_count].stretch()
-                    if self.__legs[tick_count].name == 'LEFT_LEG_FRONT':
-                        self.__legs[tick_count].body()
-                    if self.__legs[tick_count].name == 'RiGHT_LEG_BACK':
-                        self.__legs[tick_count].body()
-                    if self.__legs[tick_count].name == 'LEFT_LEG_BACK':
-                        self.__legs[tick_count].stretch()
+                    # if self.__legs[tick_count].name == 'RIGHT_LEG_FRONT':
+                    #     self.__legs[tick_count].stretch()
+                    # if self.__legs[tick_count].name == 'LEFT_LEG_FRONT':
+                    #     self.__legs[tick_count].body()
+                    # if self.__legs[tick_count].name == 'RiGHT_LEG_BACK':
+                    #     self.__legs[tick_count].body()
+                    # if self.__legs[tick_count].name == 'LEFT_LEG_BACK':
+                    #     self.__legs[tick_count].stretch()
                     # if not self.__legs[tick_count].invert:
                     #     if self.__legs[tick_count].name == "RIGHT_LEG_FRONT":
                     #         self.__legs[tick_count].stretch()
@@ -765,6 +765,19 @@ class SmarsRobot():
                     #         self.__legs[tick_count].body()
                     #     if self.__legs[tick_count].name == "LEFT_LEG_FRONT":
                     #         self.__legs[tick_count].stretch()
+
+                    if not self.__legs[tick_count].invert:
+                        # if self.__legs[tick_count].name == "LEFT_LEG_BACK":
+                        if self.__legs[tick_count].name == "RIGHT_LEG_FRONT":
+                            self.__legs[tick_count].stretch()
+                        else:
+                            self.__legs[tick_count].body()
+                    elif self.__legs[tick_count].invert:
+                        # if self.__legs[tick_count].name == "LEFT_LEG_FRONT":
+                        if self.__legs[tick_count].name == "RIGHT_LEG_BACK":
+                            self.__legs[tick_count].body()
+                        else:
+                            self.__legs[tick_count].stretch()
                     time.sleep(SLEEP_COUNT)
                     self.__feet[tick_count].up()
                     time.sleep(SLEEP_COUNT)
