@@ -18,6 +18,15 @@ Link to thingiverse original model:
 Link to Quad version
 <https://www.thingiverse.com/thing:2755973>
 
+## Version 2.0 Released
+Version 2.0 has now been released, including:
+- fixes for the walking cycle
+- new Morse code feature - use `tap_message()` to tap out message
+- changing the name with `name = "name"` also taps out the new name
+- Added a new `config` function to return the current configuration
+- Added a new identify feature, for identifying each limb - use `identify(channel)` to make each limb wiggle one at a time
+- added a new channel property so that PCA9685 channels can be set at runtime
+
 ## Overview and Background
 
 *From the Creator - Kevin Thomas*
