@@ -470,19 +470,23 @@ class SmarsRobot():
 
     def tap_message(self, message:str):
         """ Taps out a character """
+        message = message.lower()
         self.__legs[Channel.LEFT_FOOT_FRONT].down()
         for character in message:
             dot = 0.25
             dash = 0.5
             duration = 0.0
-            for dot_dash in Morse.alphabet[character]:
-                if dot_dash == '.':
-                    duration = dot
-                if dot_dash == "-":
-                    duration = dash
-                self.__legs[Channel.LEFT_FOOT_FRONT].down()
-                time.sleep(duration)
-                self.__legs[Channel.LEFT_FOOT_FRONT].up()
+            if character == " ":
+                duration = 1.5
+            else:
+                for dot_dash in Morse.alphabet[character]:
+                    if dot_dash == '.':
+                        duration = dot
+                    if dot_dash == "-":
+                        duration = dash
+                    self.__legs[Channel.LEFT_FOOT_FRONT].down()
+                    time.sleep(duration)
+                    self.__legs[Channel.LEFT_FOOT_FRONT].up()
 
 
     def identify(self, channel:int)->str:
