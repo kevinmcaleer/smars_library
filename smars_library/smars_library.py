@@ -468,10 +468,14 @@ class SmarsRobot():
                     leg_minangle=9, leg_maxangle=90, invert=True))
     # print "number of legs", len(legs)
 
-    def tap_message(self, message:str):
+    def tap_message(self, message:str)->bool:
         """ Taps out a character """
         message = message.lower()
-        self.__legs[Channel.LEFT_FOOT_FRONT].down()
+        for character in message:
+            if character not in Morse.alphabet:
+                print("Sorry the character", character, "isn't part of Morse Code, please try again")
+                return False
+        self.__legs[Channel.LEFT_FOOT_FRONT].up()
         for character in message:
             dot = 0.25
             dash = 0.5
@@ -484,10 +488,11 @@ class SmarsRobot():
                         duration = dot
                     if dot_dash == "-":
                         duration = dash
-                    self.__legs[Channel.LEFT_FOOT_FRONT].down()
-                    time.sleep(duration)
                     self.__legs[Channel.LEFT_FOOT_FRONT].up()
-
+                    time.sleep(duration)
+                    self.__legs[Channel.LEFT_FOOT_FRONT].down()
+                    time.sleep(0.1)
+        return True
 
     def identify(self, channel:int)->str:
         """ Identies the limb by the channel passed in, returns the limb name """
