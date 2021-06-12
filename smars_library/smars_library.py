@@ -477,7 +477,7 @@ class SmarsRobot():
                 return False
         self.__feet[Channel.LEFT_FOOT_FRONT].up()
         for character in message:
-            dot = 0.25
+            dot = 0.175
             dash = 0.5
             duration = 0.0
             if character == " ":
@@ -486,8 +486,11 @@ class SmarsRobot():
                 for dot_dash in Morse.alphabet[character]:
                     if dot_dash == '.':
                         duration = dot
+                        print(".")
                     if dot_dash == "-":
                         duration = dash
+                        print("-")
+                        time.sleep(duration/2)  
                     self.__feet[Channel.LEFT_FOOT_FRONT].up()
                     time.sleep(duration)
                     self.__feet[Channel.LEFT_FOOT_FRONT].down()
@@ -603,6 +606,7 @@ class SmarsRobot():
         """
         self.__name = name
         print("***", name, "Online ***")
+        self.tap_message(self.__name)
         if self.debug:
             logging.info("changed name to %s", name)
 
