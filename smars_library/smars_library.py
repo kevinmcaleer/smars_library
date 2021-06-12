@@ -472,7 +472,7 @@ class SmarsRobot():
         """ Taps out a character """
         message = message.lower()
         for character in message:
-            if character not in Morse.alphabet or character != " ":
+            if character not in Morse.alphabet and character != " ":
                 print("Sorry the character", character, "isn't part of Morse Code, please try again")
                 return False
         self.__feet[Channel.LEFT_FOOT_FRONT].up()
