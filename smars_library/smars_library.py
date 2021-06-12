@@ -28,6 +28,7 @@ import time
 import logging
 import Adafruit_PCA9685
 from .channel import Channel
+from .morse import Morse
 logging.basicConfig(level=logging.CRITICAL)
 logging.propagate = False
 
@@ -466,6 +467,23 @@ class SmarsRobot():
     __legs.append(Leg(name='RIGHT_LEG_BACK', channel=4,
                     leg_minangle=9, leg_maxangle=90, invert=True))
     # print "number of legs", len(legs)
+
+    def tap_message(self, message:str):
+        """ Taps out a character """
+        self.__legs[Channel.LEFT_FOOT_FRONT].down()
+        for character in message:
+            dot = 0.25
+            dash = 0.5
+            duration = 0.0
+            for dot_dash in Morse.alphabet[character]:
+                if dot_dash == '.':
+                    duration = dot
+                if dot_dash == "-":
+                    duration = dash
+                self.__legs[Channel.LEFT_FOOT_FRONT].down()
+                time.sleep(duration)
+                self.__legs[Channel.LEFT_FOOT_FRONT].up()
+
 
     def identify(self, channel:int)->str:
         """ Identies the limb by the channel passed in, returns the limb name """
