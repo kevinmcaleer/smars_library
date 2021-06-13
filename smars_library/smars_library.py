@@ -469,7 +469,27 @@ class SmarsRobot():
     # print "number of legs", len(legs)
 
     def tap_message(self, message:str)->bool:
-        """ Taps out a character """
+        """
+        Taps out a character
+
+        Provide the text string you want the robot to tap out via the message parameter.
+        Make sure it is only lowercase alphabetic or numeric values. Spaces are allowed too.
+        It will convert all the text to lower case if there are any uppercase characters.
+
+        Parameters:
+        ----------
+        message : str
+            This is the message to be tapped out by the Robot.
+
+        Returns
+        -------
+        bool
+            Returns True is the message was a valid Morse code compatible
+            string (alpha-numeric characters)
+
+            Returns False if the message is invalid.
+        """
+
         message = message.lower()
         for character in message:
             if character not in Morse.alphabet and character != " ":
@@ -498,7 +518,29 @@ class SmarsRobot():
         return True
 
     def identify(self, channel:int)->str:
-        """ Identies the limb by the channel passed in, returns the limb name """
+        """
+        Identies the limb by the channel passed in, returns the limb name
+
+        This function will wiggle the limb (between 80 and 100 degrees), so
+        that you can easily identify if you have the correct limb wired up
+        to the PCA9685 board.
+
+        It will also indiciate if the limb is a foot or a leg.
+
+        Parameters:
+        -----------
+
+        channel : int
+            this is the channel you want to probe - to identify which servo
+            or limb is connected to it.
+
+        Returns
+        -------
+
+        str
+            Returns the name of the channel - that is the foot or the limb name.
+
+        """
         for limb in self.__feet:
             if limb.channel == channel:
                 print("limb found in Feet")
@@ -511,8 +553,28 @@ class SmarsRobot():
                 return limb.name
         return "Limb not found"
 
-    def set_limb_channel(self, limb_name, channel)->bool:
-        """ Sets the limb name to the channel provided, returns True if complete, False if not """
+    def set_limb_channel(self, limb_name:str, channel:int)->bool:
+        """
+        Sets the limb name to the channel provided, returns True if complete, False if not
+
+        This sets the channel to the limb name provided.
+
+        Parameters:
+        -----------
+
+        limb_name : str
+            this is the name of the limb, e.g. LEFT_LEG_FRONT
+        channel : int
+            this is the channel number on the PCA9685 board, e.g. channel = 0
+
+        Returns
+        -------
+
+        bool
+            Returns True if the channel name was found and successfully set to
+            the new channel number.
+            Returns False if the channel name was not found.
+        """
 
         index = chans.get(limb_name)
         print(index)
@@ -540,7 +602,31 @@ class SmarsRobot():
 
     @property
     def config(self)->dict:
-        """ Get the current limb configuration as a dictionary of settings"""
+        """
+        Get the current limb configuration as a dictionary of settings
+
+        This function provides a dictionary of all the limbs and their settings.
+        These settings include:
+        * name - the limb name
+        * channel - the PCA9685 channel the limb.servo is connected to
+        * invert - if the servo is upside down or not, and if the 0 - 180 degress
+                   should be reversed to 180 - 0
+        * min_angle - the minimum angle the servo can move to, to prevent damaging the robot
+        * max_angle - the maximum angle the servo can move to
+
+        Parameters:
+        ----------
+
+        n/a
+
+        Returns
+        -------
+
+        dict
+            Returns a dictionary of legs and feetm with all the information for each outlined
+            above.
+
+        """
         limb_config = []
         temp_limb = []
         for limb in self.__feet:
@@ -563,12 +649,46 @@ class SmarsRobot():
 
     @property
     def debug(self)->bool:
-        """ returns the debug status """
+        """
+        Returns the debug status
+
+        The Debug flag is used to provide more verbose output in some of the functions.
+        Setting this flag to true will provide that more detailed output to the console.
+
+        Parameters:
+        -----------
+        n/a
+
+        Returns
+        -------
+
+        bool
+            Returns True if the debug flag is set
+            Returns False if the debug flag is not set
+        """
         return self.__debug
 
 
     @debug.setter
     def debug(self, value:bool):
+        """
+        Sets the debug flag status.
+
+        The Debug flag is used to provide more verbose output in some of the functions.
+        Setting this flag to true will provide that more detailed output to the console.
+
+        Parameters:
+        -----------
+        value : bool
+            The status to change the debug flag to.
+
+        Returns
+        -------
+
+        n/a
+
+        """
+
         if value:
             self.__debug = True
         elif not value:
@@ -577,7 +697,22 @@ class SmarsRobot():
             print(f"Unknown value: {value}")
 
     def invert_feet(self):
-        """ inverts the feet """
+        """
+        Inverts the feet
+
+        This Function swaps all the 'Invert' status of the feet,
+        from False to True or True to False. This is useful if you have
+        printed the robot with the servo holders upside down and the feet
+        at the top of the leg, rather than at the bottom.
+
+        Parameters:
+        -----------
+        n/a
+
+        Returns
+        -------
+        n/a
+        """
         for limb in self.__feet:
             if limb.invert:
                 limb.invert = False
@@ -585,7 +720,20 @@ class SmarsRobot():
                 limb.invert = True
 
     def default(self):
-        """ Sets the limb to the default position """
+        """
+        Sets the limb to the default position.
+
+        This function sets the legs and feet to the 'default' position, that is
+        at the 90 degree position.
+
+        Parameters:
+        -----------
+        n/a
+
+        Returns
+        -------
+        n/a
+        """
         for limb in self.__legs:
             limb.default()
         for limb in self.__feet:
@@ -595,7 +743,20 @@ class SmarsRobot():
     @property
     def name(self)->str:
         """
-        gets the robots name
+        Gets the robots name.
+
+        The name property can be used to get or set the name of the Robot.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        str
+            Returns the name of the robot as a text string.
         """
         return self.__name
 
@@ -603,6 +764,20 @@ class SmarsRobot():
     def name(self, name:str):
         """
         Sets the robots name, used for displaying console messages.
+
+        This function sets the name of the robot, and then taps out
+        the name of the Robot in Morse code.
+
+        Parameters:
+        -----------
+
+        name : str
+            The new name of the Robot to be set
+
+        Returns
+        -------
+
+            n/a
         """
         self.__name = name
         print("***", name, "Online ***")
@@ -612,7 +787,20 @@ class SmarsRobot():
 
     def leg_reset(self):
         """
-        used to reset all the legs
+        Used to reset all the legs.
+
+        This is the same as the default function, it sets each
+        limb to its defualt, 90 degree position.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        n/a
         """
         for limb in self.__legs:
             limb.default()
@@ -621,7 +809,20 @@ class SmarsRobot():
 
     def middle(self):
         """
-        used to position all the legs into the middle position
+        Used to position all the legs into the middle position.
+
+        This function moves each leg to the middle position, which is
+        half way between the minimum angle and the maximum angle.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        n/a
         """
         print("received middle command")
         for limb in self.__legs:
@@ -629,7 +830,21 @@ class SmarsRobot():
 
     def sit(self):
         """
-        used to sit the robot down
+        Used to sit the robot down.
+
+        This function sits the robot down by setting each of the feet
+        to the Down position.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        n/a
+
         """
         print(self.__name, "sitting Down.")
         for limb in self.__feet:
@@ -637,7 +852,20 @@ class SmarsRobot():
 
     def stand(self):
         """
-        used to stand the robot up
+        Used to stand the robot up.
+
+        This function stands the Robot up by setting each of the feet
+        to the up position.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        n/a
         """
         print(self.name, "standing up.")
         for limb in self.__feet:
@@ -645,7 +873,23 @@ class SmarsRobot():
             limb.up()
 
     def swing(self):
-        """ Moves the limb to the swing position """
+        """
+        Moves the limb to the swing position.
+
+        This function moves the legs to the swing position, which makes the
+        Robot form a giant X shape. It lifts each foot up, moves the leg and then
+        puts the foot back down again.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        n/a
+        """
         for limb in range(0, 4):
             self.__feet[limb].down()
             time.sleep(SLEEP_COUNT)
@@ -655,7 +899,23 @@ class SmarsRobot():
             time.sleep(SLEEP_COUNT)
 
     def body(self):
-        """ moves all the limbs to the body position """
+        """
+        Moves all the limbs to the body position.
+
+        This function moves the legs to the body position, which makes the
+        Limbs move close to the chassis. It lifts each foot up, moves the leg and then
+        puts the foot back down again.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        n/a
+        """
         for limb in range(0, 4):
             self.__feet[limb].down()
             time.sleep(SLEEP_COUNT)
@@ -665,7 +925,23 @@ class SmarsRobot():
             time.sleep(SLEEP_COUNT)
 
     def stretch(self):
-        """ moves all the limbs to the body position """
+        """
+        Moves all the limbs to the body position.
+
+        This function moves the legs to the Stretch position, which makes the
+        Robot legs stretch out towards the head and tail. It lifts each foot up,
+        moves the leg and then puts the foot back down again.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        n/a
+        """
         for limb in range(0, 4):
             self.__feet[limb].down()
             time.sleep(SLEEP_COUNT)
@@ -676,7 +952,8 @@ class SmarsRobot():
 
     def turnright(self):
         """
-        turns the robot to the right
+        Turns the robot to the right.
+
         """
 
         chan = Channel()
@@ -698,7 +975,7 @@ class SmarsRobot():
 
     def turnleft(self):
         """
-        turn robot left
+        Turns the robot to the left
         """
         chan = Channel()
         print(self.name, "Turning left.")
@@ -717,13 +994,45 @@ class SmarsRobot():
         self.swing()
 
     def forward(self, steps:int=None):
-        """ Move the Robot Forward """
+        """
+        Move the Robot Forward.
+
+        The Robot will walk forward by the number of steps provided, if no steps are provided
+        it will walk a single step.
+
+        Parameters:
+        -----------
+
+        steps : int
+            The number of steps to walk forward
+
+        Returns
+        -------
+        
+        n/a
+        """
         if steps is None:
             steps = 1
         self.walkforward(steps)
 
     def backward(self, steps:int=None):
-        """ Move the Robot Backward """
+        """
+        Move the Robot Backward
+
+        The Robot will walk backwards by the number of steps provided, if no steps are provided
+        it will walk a single step.
+
+        Parameters:
+        -----------
+
+        steps : int
+            The number of steps to walk backwards
+
+        Returns
+        -------
+        
+        n/a
+        """
         if steps is None:
             steps = 1
         self.walkbackward(steps)
@@ -743,10 +1052,25 @@ class SmarsRobot():
         print("swing()")
         print("body()")
         print("default()")
+        print("tap_message(<the message to tap in Morse Code>)")
 
     def walkforward(self, steps:int=None):
         """
         Used to move the robot forward
+
+        The Robot will walk forward by the number of steps provided, if no steps are provided
+        it will walk a single step.
+
+        Parameters:
+        -----------
+
+        steps : int
+            The number of steps to walk forward
+
+        Returns
+        -------
+
+        n/a
         """
 
         print("Moving Forward")
@@ -777,26 +1101,6 @@ class SmarsRobot():
                     self.__feet[tick_count].down()
                     time.sleep(SLEEP_COUNT)
 
-                    # Old walking code - not very clear
-                    # if self.__legs[tick_count].name == 'RIGHT_LEG_FRONT':
-                    #     self.__legs[tick_count].stretch()
-                    # if self.__legs[tick_count].name == 'LEFT_LEG_FRONT':
-                    #     self.__legs[tick_count].body()
-                    # if self.__legs[tick_count].name == 'RiGHT_LEG_BACK':
-                    #     self.__legs[tick_count].body()
-                    # if self.__legs[tick_count].name == 'LEFT_LEG_BACK':
-                    #     self.__legs[tick_count].stretch()
-                    # if not self.__legs[tick_count].invert:
-                    #     if self.__legs[tick_count].name == "RIGHT_LEG_FRONT":
-                    #         self.__legs[tick_count].stretch()
-                    #     if self.__legs[tick_count].name == "LEFT_LEG_BACK":
-                    #         self.__legs[tick_count].body()
-                    # if self.__legs[tick_count].invert:
-                    #     if self.__legs[tick_count].name == "RIGHT_LEG_BACK":
-                    #         self.__legs[tick_count].body()
-                    #     if self.__legs[tick_count].name == "LEFT_LEG_FRONT":
-                    #         self.__legs[tick_count].stretch()
-
                     if not self.__legs[tick_count].invert:
                         # if self.__legs[tick_count].name == "LEFT_LEG_BACK":
                         if self.__legs[tick_count].name == "RIGHT_LEG_FRONT":
@@ -814,8 +1118,24 @@ class SmarsRobot():
                     time.sleep(SLEEP_COUNT)
 
     def walkbackward(self, steps):
-        """ used to move the robot backward. """
+        """
+        Used to move the robot backward.
 
+        The Robot will walk backward by the number of steps provided, if no steps are provided
+        it will walk a single step.
+
+        Parameters:
+        -----------
+
+        steps : int
+            The number of steps to walk backward
+
+        Returns
+        -------
+
+        n/a
+
+        """
         print("Moving Backward")
 
         if steps is None:
@@ -860,8 +1180,23 @@ class SmarsRobot():
                     self.__feet[tick_count].up()
                     time.sleep(SLEEP_COUNT)
 
-    def clap(self, clap_count=None):
-        """  Clap front two hands (the sound of two hands clapping) """
+    def clap(self, clap_count:int=None):
+        """
+        Clap front two hands (the sound of two hands clapping).
+
+        Claps the number of times as defined in by clap_count, if no clap_count if provided
+        it defaults to 1 clap.
+
+        Parameters:
+        -----------
+        clap_count : int
+            The number of times the Robot should perform the Clap action.
+
+        Returns
+        -------
+
+        n/a
+        """
         chan = Channel()
 
         print("Clapping")
@@ -881,9 +1216,24 @@ class SmarsRobot():
             time.sleep(SLEEP_COUNT * 2)
         self.stand()
 
-    def wiggle(self, wiggle_count=None):
-        """ Wiggle butt """
+    def wiggle(self, wiggle_count:int=None):
+        """
+        Performs a cheeky Wiggle butt Action
 
+        This is another fun action - it will make the robot wiggle by the
+        number of times as specificed in the wiggle_count; if no number is
+        provided it will default to 1 wiggle.
+
+        Parameters:
+        -----------
+        wiggle_count : int
+            The number of times to perform the wiggle action
+
+        Returns
+        -------
+        
+        n/a
+        """
         print("Wiggling")
 
         if wiggle_count is None:
@@ -906,7 +1256,22 @@ class SmarsRobot():
         self.stand()
 
     def get_telemetry(self):
-        """ returns a list of limbs and measurements """
+        """
+        Returns a list of limbs and measurements.
+
+        This is used to provide detailed meaurements for each limb; the current angle
+        the limb is set to.
+
+        Parameters:
+        -----------
+
+        n/a
+
+        Returns
+        -------
+
+        n/a
+        """
         telemetry = []
         chan = Channel()
         telemetry.append(["left_leg_front", self.__legs[chan.LEFT_LEG_FRONT].angle])
@@ -920,28 +1285,52 @@ class SmarsRobot():
         return telemetry
 
 class CommandHistory():
-    """ models the command history object """
+    """
+    Models the command history object
+
+    This class can be used to capture each of the commands the Robot has performed
+    into a list so that this can be displayed or used later.
+    """
 
     # Private property History
     __history = []
 
     def __init__(self):
+        """ Initialises the CommandHistory Class
+        """
         self.__history.append("*** new history ***")
 
-    def append(self, command):
-        """ adds a command to the command history """
+    def append(self, command:str):
+        """ Adds a command to the command history
+
+        Appends a command passed via the command parameter to the history list.
+
+        Parameters:
+        -----------
+
+        command : str
+            The command to be appended to the history list
+
+        Returns
+        -------
+
+        n/a
+        """
         self.__history.append(command)
 
     def clear(self):
-        """ clears the command history """
+        """ clears the command history
+        
+        This function wipes the command history.
+        """
         self.__history = []
 
     @property
     def history(self):
-        """ gets all command history """
+        """ Gets all command history """
         return self.__history
 
     @property
     def last_ten(self):
-        """ get last 10 command history """
+        """ Get last 10 command history """
         return self.__history[-10:]
