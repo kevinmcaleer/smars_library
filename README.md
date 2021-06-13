@@ -2,7 +2,7 @@
 
 Screwless Modular Assemblable Robotic System
 
-![Build Status](https://travis-ci.com/kevinmcaleer/smars.svg)
+![Build Status](https://travis-ci.com/kevinmcaleer/smars_library.svg)
 
 ## SMARSfan.com
 
