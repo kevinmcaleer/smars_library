@@ -5,6 +5,11 @@ Screwless Modular Assemblable Robotic System
 ![Build Status](https://travis-ci.com/kevinmcaleer/smars_library.svg)
 
 > Quick fix - please add `busnum=1` to anywhere the Adafruit_PCA9685.PCA9685 is used. this should fix the issues of it not detecting I2C
+>
+> e.g.
+> ```python
+> PWM = Adafruit_PCA9685.PCA96859(busnum=1)
+> ```
 
 
 ## SMARSfan.com
