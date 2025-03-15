@@ -4,6 +4,9 @@ Screwless Modular Assemblable Robotic System
 
 ![Build Status](https://travis-ci.com/kevinmcaleer/smars_library.svg)
 
+> Quick fix - please add `busnum=1` to anywhere the Adafruit_PCA9685.PCA9685 is used. this should fix the issues of it not detecting I2C
+
+
 ## SMARSfan.com
 
 Visit www.smarsfan.com for more information about this project. The site includes build instructions, videos, an interview with the designer and much more.
