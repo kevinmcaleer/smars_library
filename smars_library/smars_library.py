@@ -48,7 +48,7 @@ DEBUG = False
 
 # Initialise the PCA9685 using the default address (0x40).
 try:
-    PWM = Adafruit_PCA9685.PCA9685()
+    PWM = Adafruit_PCA9685.PCA9685(busnum=1)
 
     # the short delay should help the PCA9685 settle and not produce errors
     time.sleep(1)
@@ -139,7 +139,7 @@ class Leg():
         # Initialises the leg object
         try:
             if DO_NOT_USE_PCA_DRIVER is False:
-                pwm = Adafruit_PCA9685.PCA9685()
+                pwm = Adafruit_PCA9685.PCA9685(busnum=1)
         except RuntimeError as error:
             logging.warning("The servo driver failed to initialise  \
             - have you installed the adafruit PCA9685 driver, \
